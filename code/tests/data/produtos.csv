@@ -1,4 +1,0 @@
-nome,loja,moeda,valor,frete,valor_total,link,nota,estoque,tipo_envio,tempo_entrega,cupom
-"Smartphone Modelo X","Loja A","BRL",2500.00,50.00,2550.00,"http://lojaa.com/prod/1",4.5,150,"Nascional","2025-09-15T18:00:00",true
-"Notebook Gamer Y","Loja B","BRL",5000.00,100.00,5100.00,"http://lojab.com/prod/2",4.8,75,"Nascional","2025-09-18T18:00:00",false
-"Fone de Ouvido Z","Loja C","BRL",300.00,25.00,325.00,"http://lojac.com/prod/3",4.2,300,"Internacional","2025-09-20T18:00:00",true
