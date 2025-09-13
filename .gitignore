@@ -1,1 +1,4 @@
 .vscode/
+*.bkp
+__pycache__/
+.pytest_cache/
