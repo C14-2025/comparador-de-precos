@@ -1,5 +1,8 @@
 class Produto:
     def __init__(self, nome, moeda, valor, frete, link, nota, estoque, tipo_envio, cupom):
+        if valor < 0:
+            raise ValueError("O valor do produto não pode ser negativo")
+        
         self.nome = nome
         #adicionar o objeto loja depois
         self.moeda = moeda
