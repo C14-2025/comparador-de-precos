@@ -1,0 +1,12 @@
+pandas==2.3.2
+numpy==2.3.3
+python-dateutil==2.9.0.post0
+pytz==2025.2
+tzdata==2025.2
+
+pytest==8.4.2
+iniconfig==2.1.0
+packaging==25.0
+pluggy==1.6.0
+colorama==0.4.6
+
