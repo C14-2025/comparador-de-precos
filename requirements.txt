@@ -1,5 +1,6 @@
 pandas==2.3.2
 numpy==2.3.3
+
 python-dateutil==2.9.0.post0
 pytz==2025.2
 tzdata==2025.2
@@ -10,3 +11,4 @@ packaging==25.0
 pluggy==1.6.0
 colorama==0.4.6
 
+requests==2.31.0
