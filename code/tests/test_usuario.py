@@ -143,5 +143,6 @@ def test_criar_conta_faltando_dados(): # colocando dados a menos (não passa pel
         "28-05-2003",
         "Brasileira"
     )
+    
     with pytest.raises(ValueError, match="Dados obrigatorios incompletos"):
         novo_usuario.criar_conta()

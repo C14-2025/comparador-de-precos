@@ -38,8 +38,4 @@ class Usuario:
 
         if cep_existe.json().get('erro') == True:
             raise ValueError("CEP inexistente")
-
             
-            
-    
-        
