@@ -8,6 +8,7 @@ class Produto:
         self.moeda = moeda
         self.valor = valor 
         self.frete = frete
+        self.valor_total = 0
         self.link = link
         self.nota = nota
         self.estoque = estoque
