@@ -8,11 +8,11 @@ Projeto da matéria de C14 dedicado a criar uma aplicação web que compara pre�
 - Framework: Django;
 - Tipo de aplicação: Web;
 
-| Participante  | Matrícula / Curso |
-| ------------- | ------------- |
-| Beatriz Araújo Cardozo | 339 / GES |
-| Felipe Ferreira de Carvalho Gabriel Pereira | 380 / GES | 
-| João Paulo Fonseca Bernardo | 207 / GES |
-| John Nunes Sugahara | 268 / GES |
-| Marcelo Alckmin Pereira Lima | 119 / GES |
-| Vinícius Carvalho Ensá | 266 / GES |
+| Participante  | Matrícula / Curso | GitHub |
+| ------------- | ----------------- | ------ |
+| Beatriz Araújo Cardozo | 339 / GES | [beatriz-a-cardozo](https://github.com/beatriz-a-cardozo) |
+| Felipe Ferreira de Carvalho Gabriel Pereira | 380 / GES | [Fefeeu](https://github.com/Fefeeu) | 
+| João Paulo Fonseca Bernardo | 207 / GES | [JoaoPauloBernardo](https://github.com/JoaoPauloBernardo) |
+| John Nunes Sugahara | 268 / GES | [JohnSugahara](https://github.com/JohnSugahara) |
+| Marcelo Alckmin Pereira Lima | 119 / GES | [marceloalckmin](https://github.com/marceloalckmin) |
+| Vinícius Carvalho Ensá | 266 / GES | [ViniciusCarvalhoEnsa](https://github.com/ViniciusCarvalhoEnsa) |
