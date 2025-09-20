@@ -1,6 +1,12 @@
 import pytest
 from unittest.mock import Mock
 from app.produto.AuxiliarProduto import AuxiliarProduto
+
+import sys, os
+
+# Adiciona o diretório raiz ao path do Python
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import requests
 
 @pytest.fixture
@@ -9,21 +15,25 @@ def lista_de_produtos_mock():
     p1 = Mock()
     p1.nome = "Produto A"
     p1.valor = 50
+    p1.nota = 4.9
     p1.valor_total = 125 # valor + frete
 
     p2 = Mock()
     p2.nome = "Produto B"
     p2.valor = 100
+    p2.nota = 3.1
     p2.valor_total = 110 # valor + frete
 
     p3 = Mock()
     p3.nome = "Produto C"
     p3.valor = 200
+    p3.nota = 4.3
     p3.valor_total = 275 # valor + frete
 
     p4_produto_invalido = Mock()
     p4_produto_invalido.nome = "Produto D INVALIDO"
     p4_produto_invalido.valor = -10
+    p4_produto_invalido.nota = -1.0
     p4_produto_invalido.valor_total = 20 # valor + frete
 
     return [p1, p2, p3, p4_produto_invalido]
@@ -58,6 +68,16 @@ def test_ordena_valor_decrescente(lista_de_produtos_mock):
     assert resultado[1].nome == "Produto A"
     assert resultado[2].nome == "Produto B"
 
+
+## Teste mock para ordenar nota em ordem decrescente (Vinícius)
+def test_ordena_nota_decrescente(lista_de_produtos_mock):
+    resultado = AuxiliarProduto.ordena_nota(lista_de_produtos_mock, decrescente=True)
+    
+    assert resultado[0].nome == "Produto A"
+    assert resultado[1].nome == "Produto C"
+    assert resultado[2].nome == "Produto B"
+
+
 ## Função Para o Teste de Mock John
 def test_frete_com_cupom_e_preco_baixoMOCK():
     dados_raw = requests.get("https://api.naoexisteEApenasParaOCodigo.com/dados/produto/1?formato=json")
@@ -67,8 +87,11 @@ def test_frete_com_cupom_e_preco_baixoMOCK():
     valorfinal_produto = float(dados['valor final'])
     possuiCupom_produto = {dados['Cupom de Frete Grátis']}
     
-    if (possuiCupom_produto and (valor_produto >= 100)): valorfinal_produto = dados['valor']
-    else: valorfinal_produto = float(dados_raw.json()[0]["valor final"])
+    if (possuiCupom_produto and (valor_produto >= 100)): 
+        valorfinal_produto = dados['valor']
+
+    else: 
+        valorfinal_produto = float(dados_raw.json()[0]["valor final"])
     
      
     return valorfinal_produto

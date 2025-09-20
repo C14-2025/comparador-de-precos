@@ -1,14 +1,13 @@
 #test_auxiliarProduto
 import pytest
-import pytest
 from unittest.mock import Mock, patch
-import sys
-import os
+import sys, os
 import requests
-import test_AuxiliarProduto
 
 # Adiciona o diretório raiz ao path do Python
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+import test_AuxiliarProduto
 
 from app.AuxiliarProduto.AuxiliarProduto import calcula_frete
 
