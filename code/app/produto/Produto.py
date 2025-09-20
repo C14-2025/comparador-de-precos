@@ -7,7 +7,7 @@ class Produto:
         
         self.nome = nome
         #adicionar o objeto loja depois
-        self.moeda = moeda
+        self.moeda = moeda.lower() # força lowercase por conta do formato do json retornado pela api
         self.valor = valor 
         self.frete = frete
         self.valor_total = 0
@@ -17,6 +17,12 @@ class Produto:
         self.tipo_envio = tipo_envio
         #adicionar tempo_entrega depois
         self.cupom = cupom
+
+        # Não faço ideia se é correto fazer essa chamada no construtor, mas se não for dps eu mudo kkkkk
+        if self.frete == 0:
+            self.valor_total = self.valor
+        else:
+            self.valor_total = self.somar_valor_frete()
         pass
     
 
@@ -31,8 +37,11 @@ class Produto:
         print(f"R$ {valor_convertido}")
         return valor_convertido
     
-    # Caso tenha valor de frete ele vai ser calculado nessa função
-    # TODO: Adicionar verificação pra ver se precisa converter a moeda ou não, ai seria só chamar a função acima
-    def somar_valor(self):
-        self.valor_total = self.valor + self.frete
-
+    # Caso tenha valor de frete ele vai ser calculado nessa função, checa também se a moeda do produto é brl ou outra
+    # se for outra moeda, faz a conversão
+    def somar_valor_frete(self):
+        if self.moeda == 'brl':
+            self.valor_total = self.valor + self.frete
+        else:
+            valor_convertido = self.converter_preco()
+            self.valor_total = valor_convertido + self.frete
