@@ -18,11 +18,11 @@ class Produto:
         #adicionar tempo_entrega depois
         self.cupom = cupom
 
-        # Não faço ideia se é correto fazer essa chamada no construtor, mas se não for dps eu mudo kkkkk
+        # Não faço ideia se é correto fazer essa chamada no construtor, mas se não for dps eu
         if self.frete == 0:
             self.valor_total = self.valor
         else:
-            self.valor_total = self.somar_valor_frete()
+            self.somar_valor_frete()
         pass
     
 
