@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import List
+import requests
 
 class Produto:
     def __init__(self, nome: str, loja: str, moeda: str, valor: float, frete: float, 
@@ -66,6 +67,23 @@ def ordena_nota(produtos_lista: list) -> list:
     # Depois ordena por nota (decrescente)
     return sorted(produtos_lista, key=lambda x: x[7], reverse=True)
 
+## Função Para o Teste de Mock John
+def analisa_Cupom():
+    dados_raw = requests.get("https://api.naoexisteEApenasParaOCodigo.com/dados/produto/1?formato=json")
+    
+    dados = dados_raw.json()
+    valor_produto = float(dados['valor'])
+    valorfinal_produto = float(dados['valor final'])
+    possuiCupom_produto = {dados['Cupom de Frete Grátis']}
+    
+    if (possuiCupom_produto and (valor_produto >= 100)): 
+        valorfinal_produto = dados['valor']
+
+    else: 
+        valorfinal_produto = float(dados_raw.json()[0]["valor final"])
+    return valorfinal_produto
+    
+     
     
 #*Ordena por melhor nota - AGORA ACEITA LISTAS DE LISTAS
 def ordena_nota(produtos: List[Produto], ordenar_notas=True, decrescente=False)->List[Produto]:

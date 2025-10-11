@@ -76,22 +76,3 @@ def test_ordena_nota_decrescente(lista_de_produtos_mock):
     assert resultado[0].nome == "Produto A"
     assert resultado[1].nome == "Produto C"
     assert resultado[2].nome == "Produto B"
-
-
-## Função Para o Teste de Mock John
-def test_frete_com_cupom_e_preco_baixoMOCK():
-    dados_raw = requests.get("https://api.naoexisteEApenasParaOCodigo.com/dados/produto/1?formato=json")
-    
-    dados = dados_raw.json()
-    valor_produto = float(dados['valor'])
-    valorfinal_produto = float(dados['valor final'])
-    possuiCupom_produto = {dados['Cupom de Frete Grátis']}
-    
-    if (possuiCupom_produto and (valor_produto >= 100)): 
-        valorfinal_produto = dados['valor']
-
-    else: 
-        valorfinal_produto = float(dados_raw.json()[0]["valor final"])
-    
-     
-    return valorfinal_produto
