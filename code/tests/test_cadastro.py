@@ -28,3 +28,7 @@ def test_senha_muito_curta_rejeitada(cad):
 def test_senha_sem_caracter_especial_rejeitada(cad):
     u = cad.cadastrar("Luiz", "luiz@example.com", "Aa1aaaaaaaaa")  # sem special
     assert u is None
+
+def test_senha_sem_maiuscula_rejeitada(cad):
+    u = cad.cadastrar("Mario", "mario@example.com", "abc1!defghijk")  # sem letra maiúscula
+    assert u is None, "Senha sem letra maiúscula deve ser rejeitada"
