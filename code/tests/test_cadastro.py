@@ -1,7 +1,7 @@
 # test_cadastro.py (pytest)
 import pytest
-from Cadastro import Cadastro
-from Usuario import Usuario
+from app.cadastro.Cadastro import Cadastro
+from app.usuario.Usuario import Usuario
 
 @pytest.fixture
 def cad():
