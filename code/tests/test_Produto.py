@@ -3,16 +3,6 @@ from unittest.mock import patch, Mock
 
 from app.produto.Produto import Produto
 
-#def test_somar_valor_com_frete():
-#    p = Produto("Beyblade", "USD", 100, 20, "letitrip.com", 4.5, 10, "Internacional - USA", False)
-#    p.somar_valor_frete() # valor = 100 | frete = 20 | 100 + 20 = 120
-#    assert p.valor_total == 120
-
-# def test_converter_preco_corretamente():
-#    p = Produto("Beyblade", "USD", 100, 20, "letitrip.com", 4.5, 10, "Internacional - USA", False)
-#    valor_convertido = p.converter_preco(5,p.valor) # USD = 5 BRL valor = 100  conversao = 100*5
-#    assert valor_convertido == 500
-
 # Teste básicaço só checando a criação de um produto
 def test_cria_produto():
     p = Produto("Beyblade", "USD", 10, 20, "letitrip.com", 4.5, 10, "Internacional - USA", False)
@@ -53,3 +43,7 @@ def testar_somar_frete_em_real():
     # como não tem moeda estrangeira não precisa da api pra conversão, isso não tinha sido testado ainda
     p = Produto("Poster 2pac all eyez on me", "brl", 30, 22, "mercadolivre.inatel", 4.7, 20, "Nacional", False)
     assert p.valor_total == 52
+
+def test_conversao_lowercase_moeda():
+    p = Produto("Retrovisor CG1600","EUR", 150, 50,"motocas.sp", 4.6, 10, "Internacional - Europe", False)
+    assert p.moeda == "eur"
