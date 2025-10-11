@@ -47,3 +47,7 @@ def testar_somar_frete_em_real():
 def test_conversao_lowercase_moeda():
     p = Produto("Retrovisor CG1600","EUR", 150, 50,"motocas.sp", 4.6, 10, "Internacional - Europe", False)
     assert p.moeda == "eur"
+
+def test_valor_sem_frete():
+    p = Produto("Porta Chupeta do Romero Brito", "brl", 72.90, 0, "rihappy.com", 5, 1, "Nacional", False)
+    assert p.valor_total == 72.90
