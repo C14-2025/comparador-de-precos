@@ -8,6 +8,24 @@ Projeto da matéria de C14 dedicado a criar uma aplicação web que compara pre�
 - Framework: Django;
 - Tipo de aplicação: Web;
 
+<p align="left">
+  <!-- Python -->
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" width="50" height="50" alt="Python"/>
+  
+  <!-- Django -->
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg" width="50" height="50" alt="Django"/>
+  
+  <!-- Streamlit -->
+  <img src="https://streamlit.io/images/brand/streamlit-mark-color.png" width="50" height="50" alt="Streamlit"/>
+  
+  <!-- pip (PyPI) -->
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pypi/pypi-original.svg" width="50" height="50" alt="pip"/>
+  
+  <!-- Web App -->
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlechrome/googlechrome-original.svg" width="50" height="50" alt="Web App"/>
+</p>
+
+
 | Participante  | Matrícula / Curso |
 | ------------- | ------------- |
 | Beatriz Araújo Cardozo | 339 / GES |
