@@ -20,9 +20,6 @@ Projeto da matéria de C14 dedicado a criar uma aplicação web que compara pre�
   
   <!-- pip (PyPI) -->
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pypi/pypi-original.svg" width="50" height="50" alt="pip"/>
-  
-  <!-- Web App -->
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlechrome/googlechrome-original.svg" width="50" height="50" alt="Web App"/>
 </p>
 
 
