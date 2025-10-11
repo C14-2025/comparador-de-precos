@@ -65,3 +65,24 @@ def ordena_nota(produtos_lista: list) -> list:
     
     # Depois ordena por nota (decrescente)
     return sorted(produtos_lista, key=lambda x: x[7], reverse=True)
+
+    
+#*Ordena por melhor nota - AGORA ACEITA LISTAS DE LISTAS
+def ordena_nota(produtos: List[Produto], ordenar_notas=True, decrescente=False)->List[Produto]:
+    produtos_validos = [produto for produto in produtos if produto.nota >= 0]
+
+    if ordenar_notas:
+            
+        ordenado_por_nota = sorted(
+            produtos_validos, 
+            key=lambda produto_valido: produto_valido.nota, 
+            reverse=decrescente
+            )
+    else:
+            
+        ordenado_por_nota = sorted(
+            produtos_validos, 
+            key=lambda produto_valido: produto_valido.nota, 
+            reverse=decrescente
+            )
+    return ordenado_por_nota
