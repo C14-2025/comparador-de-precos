@@ -1,5 +1,5 @@
 import re
-from Usuario import Usuario
+from app.usuario.Usuario import Usuario
 '''
 deixando isso aq comentado só por via das duvidas
 
