@@ -14,36 +14,39 @@ class MotorDeBusca:
 
             for dado in dados:
                 produto = dado['html']
+                soup = BeautifulSoup(produto, 'html.parser')
 
                 # ======================== NOME ========================
-                match_nome = re.search(r'class="poly-component__title"[^>]*>(.*?)</a>', produto)
-                nome_produto = match_nome.group(1) if match_nome else "Não encontrado"
+                tag_nome = soup.find('a', class_='poly-component__title')
+                nome_produto = tag_nome.text.strip() if tag_nome else "Não encontrado"
                 
                 # ======================== PRECO =======================
                 # TODO: CONVERTER MOEDA PARA O PADRAO (3 letras)
-                match_moeda = re.search(r'class="andes-money-amount__currency-symbol">(.+?)</span>', produto)
-                moeda_produto = match_moeda.group(1) if match_moeda else ""
+                tag_moeda = soup.find('span', class_='andes-money-amount__currency-symbol')
+                moeda_produto = tag_moeda.text.strip() if tag_moeda else ""
 
-                match_inteiro = re.search(r'class="andes-money-amount__fraction">(\d+)</span>', produto)
-                preco_inteiro_produto = match_inteiro.group(1) if match_inteiro else "0"
+                tag_inteiro = soup.find('span', class_='andes-money-amount__fraction')
+                preco_inteiro_produto = tag_inteiro.text.strip() if tag_inteiro else "0"
 
-                match_centavos = re.search(r'class="andes-money-amount__cents[^>]*">(\d+)</span>', produto)
-                preco_centavos_produto = match_centavos.group(1) if match_centavos else "00"
+                tag_centavos = soup.find('span', class_='andes-money-amount__cents')
+                preco_centavos_produto = tag_centavos.text.strip() if tag_centavos else "00"
 
                 preco_final_produto = f"{preco_inteiro_produto}.{preco_centavos_produto}"
-                preco_final_produto = float(preco_final_produto)
+                try:
+                    preco_final_produto = float(preco_final_produto)
+                except ValueError:
+                    preco_final_produto = 0.0
 
                 # ======================== FRETE =======================
-                match_frete_rapido = re.search(r'class="poly-shipping--next_day">(.+?)</span>', produto)
+                tag_frete_rapido = soup.find('span', class_='poly-shipping--next_day')
 
                 frete_produto = ''
-                if match_frete_rapido:
-                    frete_produto = match_frete_rapido.group(1) # Vai pegar só "Chegará grátis amanhã"
+                if tag_frete_rapido:
+                    frete_produto = tag_frete_rapido.text.strip()
                 else:
-                    
-                    match_frete_normal = re.search(r'class="poly-component__shipping">(.+?)</div>', produto)
-                    if match_frete_normal:
-                        frete_produto = match_frete_normal.group(1)
+                    tag_frete_normal = soup.find('div', class_='poly-component__shipping')
+                    if tag_frete_normal:
+                        frete_produto = tag_frete_normal.text.strip()
                     else:
                         frete_produto = "Frete Indisponível"
 
