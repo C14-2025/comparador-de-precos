@@ -3,3 +3,4 @@ __pycache__/
 *.bkp
 .pytest_cache/
 db.sqlite3
+src/app/json_temp/*.json

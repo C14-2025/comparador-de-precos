@@ -7,7 +7,7 @@ class MotorDeBusca:
         pass
 
     def tratando_mercado_livre():
-        with open('json_temp/pesquisa_mercado_livre.json', 'r', encoding='utf-8') as arquivo:
+        with open('json_temp/pesquisa_mercado_livre_2.json', 'r', encoding='utf-8') as arquivo:
             dados = json.load(arquivo)
 
             produtos = []
@@ -51,6 +51,7 @@ class MotorDeBusca:
                         frete_produto = "Frete Indisponível"
 
                 produtos.append({
+                    'loja': "Mercado Livre",
                     'nome': nome_produto,
                     'moeda': moeda_produto,
                     'preco_inteiro': preco_inteiro_produto,
@@ -62,7 +63,7 @@ class MotorDeBusca:
             return produtos
     
     def tratando_amazon():
-        with open('json_temp/pesquisa_amazon.json', 'r', encoding='utf-8') as arquivo:
+        with open('json_temp/pesquisa_amazon_2.json', 'r', encoding='utf-8') as arquivo:
             dados = json.load(arquivo)
 
             produtos = []
@@ -74,39 +75,41 @@ class MotorDeBusca:
     
                 # ======================== NOME ========================
                 tag_nome = soup.find('h2')
-                nome = tag_nome.text.strip() if tag_nome else "Nome não encontrado"
+                nome_produto = tag_nome.text.strip() if tag_nome else "Nome não encontrado"
 
                 # ======================== PRECO =======================
+                # TODO: CONVERTER MOEDA PARA O PADRAO (3 letras)
                 tag_preco = soup.find('span', class_='a-offscreen')
                 
-                moeda = "R$"
-                preco = "0,00"
+                moeda_produto = "R$"
+                preco_produto = "0,00"
                 if tag_preco:
                     texto_preco = tag_preco.text.strip() 
                     try:
                         # Divide no espaço (R$ | 411,84)
                         partes = texto_preco.split(maxsplit=1) 
                         if len(partes) == 2:
-                            moeda = partes[0]
-                            preco = partes[1]
+                            moeda_produto = partes[0]
+                            preco_produto = partes[1]
                         else:
-                            preco = texto_preco
+                            preco_produto = texto_preco
                     except:
-                        preco = texto_preco
+                        preco_produto = texto_preco
 
                 # ======================== FRETE =======================
                 tag_frete = soup.find('div', class_='udm-primary-delivery-message')
                 
                 if tag_frete:
-                    frete = " ".join(tag_frete.text.split())
+                    frete_produto = " ".join(tag_frete.text.split())
                 else:
-                    frete = "Frete não informado"
+                    frete_produto = "Frete não informado"
 
                 produtos.append({
-                    'nome': nome,
-                    'moeda': moeda,
-                    'preco': preco,
-                    'frete': frete
+                    'loja': "Amazon",
+                    'nome': nome_produto,
+                    'moeda': moeda_produto,
+                    'preco': preco_produto,
+                    'frete': frete_produto
                 })
             
             return produtos
@@ -118,7 +121,6 @@ produtos_dicionario_mercado_livre = MotorDeBusca.tratando_mercado_livre()
 for produto in produtos_dicionario_mercado_livre:
     print(json.dumps(produto, indent=4, ensure_ascii=False))
 # %%
-
 produtos_dicionario_mercado_livre = MotorDeBusca.tratando_amazon()
 for produto in produtos_dicionario_mercado_livre:
     print(json.dumps(produto, indent=4, ensure_ascii=False))
