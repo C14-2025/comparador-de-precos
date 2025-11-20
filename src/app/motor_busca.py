@@ -1,7 +1,6 @@
 # %%
 import json
 from bs4 import BeautifulSoup
-import re   
 
 class MotorDeBusca:
     def busca(produto: str)->str:
@@ -70,22 +69,17 @@ class MotorDeBusca:
                 
                 soup = BeautifulSoup(produto, 'html.parser')
     
-                # 1. NOME DO PRODUTO
-                # A Amazon usa tags <h2> para os títulos na busca
+                # ======================== NOME ========================
                 tag_nome = soup.find('h2')
                 nome = tag_nome.text.strip() if tag_nome else "Nome não encontrado"
 
-                # 2. PREÇO E MOEDA
-                # Dica de Ouro: A Amazon tem um span escondido (a-offscreen) que já traz o preço formatado!
-                # Isso evita ter que juntar '411' com '84' manualmente.
+                # ======================== PRECO =======================
                 tag_preco = soup.find('span', class_='a-offscreen')
                 
                 moeda = "R$"
                 preco = "0,00"
-                
                 if tag_preco:
-                    texto_preco = tag_preco.text.strip() # Ex: "R$ 411,84"
-                    # Vamos tentar separar a moeda do valor
+                    texto_preco = tag_preco.text.strip() 
                     try:
                         # Divide no espaço (R$ | 411,84)
                         partes = texto_preco.split(maxsplit=1) 
@@ -97,17 +91,14 @@ class MotorDeBusca:
                     except:
                         preco = texto_preco
 
-                # 3. FRETE
-                # A classe mágica da Amazon para mensagem de entrega é 'udm-primary-delivery-message'
+                # ======================== FRETE =======================
                 tag_frete = soup.find('div', class_='udm-primary-delivery-message')
                 
                 if tag_frete:
-                    # O texto costuma vir sujo com quebras de linha, o " ".join().split() limpa isso
                     frete = " ".join(tag_frete.text.split())
                 else:
                     frete = "Frete não informado"
 
-                # Adiciona à lista final
                 produtos.append({
                     'nome': nome,
                     'moeda': moeda,
