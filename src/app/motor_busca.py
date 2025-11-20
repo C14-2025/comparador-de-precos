@@ -1,13 +1,32 @@
 # %%
 import json
+import os
+import glob
+from crawlers.amazon import AmazonCrawler
+from crawlers.mercado_livre import MercadoLivreCrawler
 from bs4 import BeautifulSoup
 
 class MotorDeBusca:
-    def busca(produto: str)->str:
-        pass
+    def busca(produto: str):
+        AmazonCrawler().search(query=produto)
+        MercadoLivreCrawler().search(query=produto)
+
+        produtos = []
+        produtos.append(MotorDeBusca.tratando_mercado_livre())
+        produtos.append(MotorDeBusca.tratando_amazon())
+
+        arquivos_para_apagar = glob.glob('app/json_temp/*.json')
+        for arquivo in arquivos_para_apagar:
+            os.remove(arquivo)
+            print(f"Removido: {arquivo}")
+
+        return produtos
+
+    def removendo_arquivos(diretorio: str):
+        os.remove(diretorio)
 
     def tratando_mercado_livre():
-        with open('json_temp/pesquisa_mercado_livre_2.json', 'r', encoding='utf-8') as arquivo:
+        with open('app/json_temp/mercado_livre.json', 'r', encoding='utf-8') as arquivo:
             dados = json.load(arquivo)
 
             produtos = []
@@ -63,7 +82,7 @@ class MotorDeBusca:
             return produtos
     
     def tratando_amazon():
-        with open('json_temp/pesquisa_amazon_2.json', 'r', encoding='utf-8') as arquivo:
+        with open('app/json_temp/amazon.json', 'r', encoding='utf-8') as arquivo:
             dados = json.load(arquivo)
 
             produtos = []
@@ -116,13 +135,8 @@ class MotorDeBusca:
 
     def tratando_():
         pass
-# %%
-produtos_dicionario_mercado_livre = MotorDeBusca.tratando_mercado_livre()
-for produto in produtos_dicionario_mercado_livre:
-    print(json.dumps(produto, indent=4, ensure_ascii=False))
-# %%
-produtos_dicionario_mercado_livre = MotorDeBusca.tratando_amazon()
-for produto in produtos_dicionario_mercado_livre:
-    print(json.dumps(produto, indent=4, ensure_ascii=False))
+#%%
 
-# %%
+produtos = MotorDeBusca.busca("mouse gamer")
+for produto in produtos:
+    print(json.dumps(produto, indent=4, ensure_ascii=False))
