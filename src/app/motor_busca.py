@@ -60,7 +60,62 @@ class MotorDeBusca:
             return produtos
     
     def tratando_amazon():
-        pass
+        with open('json_temp/pesquisa_amazon.json', 'r', encoding='utf-8') as arquivo:
+            dados = json.load(arquivo)
+
+            produtos = []
+
+            for dado in dados:
+                produto = dado['html']
+                
+                soup = BeautifulSoup(produto, 'html.parser')
+    
+                # 1. NOME DO PRODUTO
+                # A Amazon usa tags <h2> para os títulos na busca
+                tag_nome = soup.find('h2')
+                nome = tag_nome.text.strip() if tag_nome else "Nome não encontrado"
+
+                # 2. PREÇO E MOEDA
+                # Dica de Ouro: A Amazon tem um span escondido (a-offscreen) que já traz o preço formatado!
+                # Isso evita ter que juntar '411' com '84' manualmente.
+                tag_preco = soup.find('span', class_='a-offscreen')
+                
+                moeda = "R$"
+                preco = "0,00"
+                
+                if tag_preco:
+                    texto_preco = tag_preco.text.strip() # Ex: "R$ 411,84"
+                    # Vamos tentar separar a moeda do valor
+                    try:
+                        # Divide no espaço (R$ | 411,84)
+                        partes = texto_preco.split(maxsplit=1) 
+                        if len(partes) == 2:
+                            moeda = partes[0]
+                            preco = partes[1]
+                        else:
+                            preco = texto_preco
+                    except:
+                        preco = texto_preco
+
+                # 3. FRETE
+                # A classe mágica da Amazon para mensagem de entrega é 'udm-primary-delivery-message'
+                tag_frete = soup.find('div', class_='udm-primary-delivery-message')
+                
+                if tag_frete:
+                    # O texto costuma vir sujo com quebras de linha, o " ".join().split() limpa isso
+                    frete = " ".join(tag_frete.text.split())
+                else:
+                    frete = "Frete não informado"
+
+                # Adiciona à lista final
+                produtos.append({
+                    'nome': nome,
+                    'moeda': moeda,
+                    'preco': preco,
+                    'frete': frete
+                })
+            
+            return produtos
 
     def tratando_():
         pass
