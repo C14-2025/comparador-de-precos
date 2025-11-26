@@ -3,7 +3,6 @@ numpy==2.3.3
 
 python-dateutil==2.9.0.post0
 pytz==2025.2
-tzdata==2025.2
 
 pytest==8.4.2
 iniconfig==2.1.0
@@ -12,3 +11,8 @@ pluggy==1.6.0
 colorama==0.4.6
 
 requests==2.31.0
+
+asgiref==3.11.0
+Django==5.2.8
+sqlparse==0.5.3
+tzdata==2025.2
