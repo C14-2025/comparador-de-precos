@@ -2,5 +2,9 @@
 __pycache__/
 *.bkp
 .pytest_cache/
+<<<<<<< HEAD
 db.sqlite3
 src/app/json_temp/*.json
+=======
+main_crawler.py
+>>>>>>> 29f68fd355cc29c80adbba704d0614acadb2665c
