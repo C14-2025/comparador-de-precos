@@ -1,0 +1,2 @@
+Na pasta static são colocados todos os assets e styles utilizados, 
+quando forem adicionados, rodar 'collectstatic' no django para endereçar os arquivos static
