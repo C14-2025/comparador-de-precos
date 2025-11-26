@@ -4,6 +4,7 @@
 # Pastas #
 setup/static/info.txt
 static/info.txt
+.vscode/
 
 ### Django ###
 *.log
