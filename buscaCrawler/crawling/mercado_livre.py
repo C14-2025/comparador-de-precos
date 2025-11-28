@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import urllib.parse
-from .base import BaseCrawler
+from crawling.base import BaseCrawler
 
 class MercadoLivreCrawler(BaseCrawler):
     def search(self, query: str):

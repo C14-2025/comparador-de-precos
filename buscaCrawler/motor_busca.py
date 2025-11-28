@@ -2,8 +2,8 @@
 import json
 import os
 import glob
-from crawlers.amazon import AmazonCrawler
-from crawlers.mercado_livre import MercadoLivreCrawler
+from crawling.amazon import AmazonCrawler
+from crawling.mercado_livre import MercadoLivreCrawler
 from bs4 import BeautifulSoup
 
 class MotorDeBusca:

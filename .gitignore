@@ -5,6 +5,8 @@
 setup/static/info.txt
 static/info.txt
 .vscode/
+TODO.md
+README.md
 
 ### Django ###
 *.log
