@@ -35,12 +35,23 @@ class MotorDeBusca:
         return produtos
 
     @staticmethod
-    def removendo_arquivos(diretorio: str):
-        os.remove(diretorio)
+    def limpar_arquivos_temporarios():
+        """Apaga todos os JSONs da pasta temporária."""
+
+        padrao = os.path.join(MotorDeBusca.PATH_TEMP, '*.json')
+        arquivos_para_apagar = glob.glob(padrao)
+        
+        for arquivo in arquivos_para_apagar:
+            try:
+                os.remove(arquivo)
+                print(f"Removido: {arquivo}")
+            except OSError as e:
+                print(f"Erro ao remover {arquivo}: {e}")
 
     @staticmethod
     def carregar_dados_json(caminho_arquivo: str) -> list:
         """Método auxiliar apenas para ler o arquivo."""
+
         try:
             with open(caminho_arquivo, 'r', encoding='utf-8') as arquivo:
                 return json.load(arquivo)
@@ -49,6 +60,8 @@ class MotorDeBusca:
 
     @staticmethod
     def tratando_mercado_livre(dados: list) -> list:
+        """Método responsavel por Tratar o HTML da loja 'Mercado Livre' recebido, transformando em objetos da classe Produto"""
+
         produtos = []
 
         for dado in dados:
@@ -102,9 +115,14 @@ class MotorDeBusca:
             )
 
             produtos.append(produto)
+    
+        return produtos
+
 
     @staticmethod
     def tratando_amazon(dados: list) -> list:
+        """Método responsavel por Tratar o HTML da loja 'Amazon' recebido, transformando em objetos da classe Produto"""
+
         produtos = []
 
         for dado in dados:
