@@ -6,14 +6,18 @@ from crawling.amazon import AmazonCrawler
 from crawling.mercado_livre import MercadoLivreCrawler
 from bs4 import BeautifulSoup
 
+# TODO: trocar a classe refactor_produto por produto
+from refactor_produto import Produto
+
+
 class MotorDeBusca:
     def busca(produto: str):
         AmazonCrawler().search(query=produto)
         MercadoLivreCrawler().search(query=produto)
 
         produtos = []
-        produtos.append(MotorDeBusca.tratando_mercado_livre())
-        produtos.append(MotorDeBusca.tratando_amazon())
+        produtos += MotorDeBusca.tratando_mercado_livre()
+        produtos += MotorDeBusca.tratando_amazon()
 
         arquivos_para_apagar = glob.glob('app/json_temp/*.json')
         for arquivo in arquivos_para_apagar:
@@ -32,8 +36,7 @@ class MotorDeBusca:
             produtos = []
 
             for dado in dados:
-                produto = dado['html']
-                soup = BeautifulSoup(produto, 'html.parser')
+                soup = BeautifulSoup(dado['html'], 'html.parser')
 
                 # ======================== NOME ========================
                 tag_nome = soup.find('a', class_='poly-component__title')
@@ -69,15 +72,15 @@ class MotorDeBusca:
                     else:
                         frete_produto = "Frete Indisponível"
 
-                produtos.append({
-                    'loja': "Mercado Livre",
-                    'nome': nome_produto,
-                    'moeda': moeda_produto,
-                    'preco_inteiro': preco_inteiro_produto,
-                    'preco_centavos': preco_centavos_produto,
-                    'preco': preco_final_produto,
-                    'frete': frete_produto
-                })
+                produto = Produto(
+                    loja="Mercado Livre",
+                    nome=nome_produto,
+                    moeda=moeda_produto,
+                    preco=preco_final_produto,
+                    frete=frete_produto                    
+                )
+
+                produtos.append(produto)
 
             return produtos
     
@@ -88,9 +91,7 @@ class MotorDeBusca:
             produtos = []
 
             for dado in dados:
-                produto = dado['html']
-                
-                soup = BeautifulSoup(produto, 'html.parser')
+                soup = BeautifulSoup(dado['html'], 'html.parser')
     
                 # ======================== NOME ========================
                 tag_nome = soup.find('h2')
@@ -105,7 +106,7 @@ class MotorDeBusca:
                 if tag_preco:
                     texto_preco = tag_preco.text.strip() 
                     try:
-                        # Divide no espaço (R$ | 411,84)
+                        # Divide no espaço (R$ "split" 411,84)
                         partes = texto_preco.split(maxsplit=1) 
                         if len(partes) == 2:
                             moeda_produto = partes[0]
@@ -123,20 +124,11 @@ class MotorDeBusca:
                 else:
                     frete_produto = "Frete não informado"
 
-                produtos.append({
-                    'loja': "Amazon",
-                    'nome': nome_produto,
-                    'moeda': moeda_produto,
-                    'preco': preco_produto,
-                    'frete': frete_produto
-                })
-            
+                produto = Produto(
+                    loja="Amazon",
+                    nome=nome_produto,
+                    moeda=moeda_produto,
+                    preco=preco_produto,
+                    frete=frete_produto
+                )
             return produtos
-
-    def tratando_():
-        pass
-#%%
-
-produtos = MotorDeBusca.busca("mouse gamer")
-for produto in produtos:
-    print(json.dumps(produto, indent=4, ensure_ascii=False))
