@@ -1,10 +1,12 @@
 class Produto():
-    def __init__(self, loja:str, nome:str, moeda:str, preco:float, frete:str):
+    def __init__(self, loja:str, nome:str, moeda:str, preco:float, frete:str, nota:float, numero_vendas:str):
         self.loja = loja
         self.nome = nome
         self.moeda = moeda
         self.preco = preco
         self.frete = frete
+        self.nota = nota
+        self.numero_vendas = numero_vendas
 
     def get_loja(self):
         return self.loja
