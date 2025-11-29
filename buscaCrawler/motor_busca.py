@@ -69,7 +69,7 @@ class MotorDeBusca:
                     if tag_frete_normal:
                         frete_produto = tag_frete_normal.text.strip()
                     else:
-                        frete_produto = "Frete Indisponível"
+                        frete_produto = "Frete Indisponível. Consultar no Site"
 
                 produto = Produto(
                     loja="Mercado Livre",
@@ -121,7 +121,7 @@ class MotorDeBusca:
                 if tag_frete:
                     frete_produto = " ".join(tag_frete.text.split())
                 else:
-                    frete_produto = "Frete não informado"
+                    frete_produto = "Frete Indisponível. Consultar no Site"
 
                 produto = Produto(
                     loja="Amazon",
