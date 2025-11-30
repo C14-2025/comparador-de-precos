@@ -4,8 +4,7 @@ import glob
 import re
 import unicodedata
 
-from crawling.amazon import AmazonCrawler
-from crawling.mercado_livre import MercadoLivreCrawler
+from crawler import MercadoLivreCrawler, AmazonCrawler
 from bs4 import BeautifulSoup
 
 # TODO: trocar a classe refactor_produto por produto
@@ -14,11 +13,11 @@ from refactor_produto import Produto
 
 class MotorDeBusca:
     # Mudar Path
-    PATH_TEMP = 'app/json_temp/'
+    PATH_TEMP = 'buscaCrawler/json_temp'
     
     def busca(produto: str):
-        AmazonCrawler().search(query=produto)
-        MercadoLivreCrawler().search(query=produto)
+        AmazonCrawler().search(query=produto, json_path=MotorDeBusca.PATH_TEMP)
+        MercadoLivreCrawler().search(query=produto, json_path=MotorDeBusca.PATH_TEMP)
 
         caminho_amazon = os.path.join(MotorDeBusca.PATH_TEMP, 'amazon.json')
         caminho_mlivre = os.path.join(MotorDeBusca.PATH_TEMP, 'mercado_livre.json')
@@ -32,7 +31,7 @@ class MotorDeBusca:
     
         produtos += MotorDeBusca.tratando_amazon(dados_amazon)
 
-        #MotorDeBusca.limpar_arquivos_temporarios()
+        MotorDeBusca.limpar_arquivos_temporarios()
         
         return produtos
 
@@ -282,8 +281,6 @@ class MotorDeBusca:
                 produtos.append(produto)
         
         return produtos
-
-
     
 termo_busca = "iphone"
 print(f"=== Iniciando busca por: '{termo_busca}' ===\n")
