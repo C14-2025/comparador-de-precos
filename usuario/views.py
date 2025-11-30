@@ -1,17 +1,29 @@
-from django.shortcuts import render
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth.hashers import check_password
+from .models import Usuario
+from .serializers import UsuarioSerializer
 
-# Responsável por cuidar do que vai ser exibido
-# Create your views here.
+@api_view(['POST'])
+def cadastrar_usuario(request):
+    serializer = UsuarioSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"mensagem": "Usuário criado com sucesso!"}, status=201)
+    return Response(serializer.errors, status=400)
 
-# def cadastro(request): # Função para a página de cadastro da aplicação usuario
-#     return render(request, 'comparador_de_preco/usuario/cadastro.html')
+@api_view(['POST'])
+def login_usuario(request):
+    email = request.data.get("email")
+    senha = request.data.get("senha")
 
-# def login(request): # Função para a página de login da aplicação usuario
-#     return render(request, 'comparador_de_preco/usuario/login.html')
+    try:
+        user = Usuario.objects.get(email=email)
+    except Usuario.DoesNotExist:
+        return Response({"erro": "Email não encontrado"}, status=404)
 
-
-
-# from django.http import HttpResponse # SÓ DE BRINCADEIRA PRA TESTAR
-
-# def teste(request):
-#     return HttpResponse('<h1>Bom dia para:</h1><p>Bia, Fefe, John, Chockito, China e o grande Vinnie!</p>')
+    if check_password(senha, user.senha):
+        return Response({"mensagem": "Login ok", "usuario_id": user.id})
+    else:
+        return Response({"erro": "Senha incorreta"}, status=400)
