@@ -1,13 +1,17 @@
 import streamlit as st
 
-class Home:
 
-    st.set_page_config(
-        page_title="Comparador de preço",
-        page_icon="💲",
-        layout="wide"
-    )
+st.set_page_config(
+    page_title="Comparador de preço",
+    page_icon="💲",
+    layout="wide"
+)
 
+import streamlit as st
+
+if "usuario_id" not in st.session_state:
+    st.warning("Você precisa fazer login.")
+    st.stop()
 
     st.title("Bem vindo, Usuário") # TROCAR AQUI DEPOIS DE IMPLEMENTAR O SISTEMA DE LOGIN AAAAAAAAAAAAAAAAAAAAAAA
     st.markdown("<br>",unsafe_allow_html=True)

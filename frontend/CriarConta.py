@@ -5,12 +5,15 @@ import requests
 class CriarConta:
 
     def validar_dados_sinc(tipo,dado):
+        
         if(tipo == "email"):
             email_padrao = r"^[^@\s]+@[^@\s]+\.[a-zA-Z]+$"
             return bool(re.match(email_padrao,dado))
+        
         if(tipo == "senha"):
             senha_padrao = r"^(?=.*[a-zA-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{12,}$"  
             return bool(re.match(senha_padrao,dado))
+        
         if(tipo=="cep"):
             match = re.match(r"^\d{5}-?\d{3}$", dado) # verifica se o valor inserido segue o padrão de cep/zip code
 
@@ -21,7 +24,9 @@ class CriarConta:
 
             cep_existe = requests.get(f"https://viacep.com.br/ws/{dado}/json")
 
-            if cep_existe.json().get('erro') == True:
+            dados_cep = cep_existe.json()
+
+            if dados_cep.get("erro"):
                 return False
             
             return True
@@ -138,8 +143,23 @@ class CriarConta:
         validacoes_passaram = email_valido and senha_valida and senhas_iguais and cep_valido
         ativar_botao = campos_obrigatorios_preenchidos and validacoes_passaram
 
-        if st.button("Criar conta",disabled=not ativar_botao):
-            st.success("Conta criada com sucesso")
-            # depois adicoionar a conexão
+        if st.button("Criar conta", disabled=not ativar_botao):
+            dados = {
+                "nome": nome,
+                "email": email,
+                "senha": senha,
+                "cep": cep,
+                "nacionalidade": nacionalidade,
+            }
+
+            resposta = requests.post(
+                "http://127.0.0.1:8000/api/usuarios/cadastrar/",
+                json=dados
+            )
+
+            if resposta.status_code == 201:
+                st.success("Conta criada com sucesso!")
+            else:
+                st.error("Usuário já cadastrado.")
 
 
