@@ -187,37 +187,52 @@ class MotorDeBusca:
                         link_produto = href_bruto
 
             # ======================== PRECO =======================
-            tag_preco = soup.find('span', class_='a-offscreen')
+            tag_container_preco = soup.find('span', class_='a-price')
             
             moeda_produto = "R$"
             valor_numerico = 0.0
 
-            if tag_preco:
-                texto_preco = tag_preco.text.strip()
+            if tag_container_preco:
+                # TENTATIVA 1: Busca o texto oculto (padrão)
+                tag_offscreen = tag_container_preco.find('span', class_='a-offscreen')
                 
-                partes = texto_preco.split(maxsplit=1) 
+                texto_preco = ""
                 
-                string_valor = ""
+                if tag_offscreen:
+                    texto_preco = tag_offscreen.text.strip()
+                
+                # TENTATIVA 2 (FALLBACK): Se falhou acima, tenta montar visualmente
+                if not texto_preco:
+                    tag_inteiro = tag_container_preco.find('span', class_='a-price-whole')
+                    tag_fracao = tag_container_preco.find('span', class_='a-price-fraction')
+                    
+                    if tag_inteiro:
+                        # Ex: "10.348" + "," + "99" -> "10.348,99"
+                        inteiro = tag_inteiro.text.strip().replace('.', '') # Remove ponto de milhar
+                        fracao = tag_fracao.text.strip() if tag_fracao else "00"
+                        texto_preco = f"{inteiro},{fracao}"
 
-                if len(partes) == 2:
-                    moeda_produto = str(partes[0])
-                    string_valor = str(partes[1])
-                else:
-                    string_valor = re.sub(r'[^\d,.]', '', texto_preco)
-
+                # --- Processamento do texto encontrado ---
+                if texto_preco:
+                    # Limpa caracteres invisíveis
+                    texto_preco = texto_preco.replace('\xa0', '').strip()
+                    
                     if texto_preco.startswith("US$") or texto_preco.startswith("$"):
                         moeda_produto = "$"
-
-                if ',' in string_valor and '.' in string_valor:
+                    
+                    # Regex para deixar só numeros, ponto e virgula
+                    string_valor = re.sub(r'[^\d,.]', '', texto_preco)
+                    
+                    # Tratamento de pontuação
+                    if ',' in string_valor and '.' in string_valor:
                         string_valor = string_valor.replace('.', '').replace(',', '.')
-
-                elif ',' in string_valor:
+                    elif ',' in string_valor:
                         string_valor = string_valor.replace(',', '.')
-                
-                try:
-                    valor_numerico = float(string_valor)
-                except ValueError:
-                    valor_numerico = 0.0
+                    
+                    try:
+                        valor_numerico = float(string_valor)
+                    except ValueError:
+                        valor_numerico = 0.0
             
             # ======================== FRETE =======================
             tag_frete = soup.find('div', class_='udm-primary-delivery-message')
@@ -252,7 +267,6 @@ class MotorDeBusca:
                     vendas_produto = t.text.strip()
                     break
 
-
             produto = Produto(
                 loja="Amazon",
                 link_produto=link_produto,
@@ -264,8 +278,32 @@ class MotorDeBusca:
                 nota=nota_produto,
                 numero_vendas=vendas_produto
             )
-            produtos.append(produto)
-            
+            if produto.preco > 0.0:
+                produtos.append(produto)
+        
         return produtos
+
+
     
+termo_busca = "iphone"
+print(f"=== Iniciando busca por: '{termo_busca}' ===\n")
+
+# Chama o motor de busca
+resultados = MotorDeBusca.busca(termo_busca)
+
+print(f"Total de produtos encontrados: {len(resultados)}\n")
+
+# Itera sobre os resultados printando as propriedades
+for i, produto in enumerate(resultados, 1):
+    print(f"--- Produto #{i} ---")
+    print(f"Loja:   {produto.loja}")
+    print(f"Link:   {produto.link_produto}")
+    print(f"Nome:   {produto.nome}")
+    print(f"Preço:  {produto.moeda} {produto.preco:.2f}")
+    print(f"Frete:  {produto.frete}")
+    print(f"Frete_gratis:  {produto.frete_gratis}")
+    print(f"Nota:   {produto.nota}")
+    print(f"Vendas: {produto.numero_vendas}")
+    print("-" * 40)
+
     
