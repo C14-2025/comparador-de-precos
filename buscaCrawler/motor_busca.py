@@ -281,26 +281,3 @@ class MotorDeBusca:
                 produtos.append(produto)
         
         return produtos
-    
-termo_busca = "iphone"
-print(f"=== Iniciando busca por: '{termo_busca}' ===\n")
-
-# Chama o motor de busca
-resultados = MotorDeBusca.busca(termo_busca)
-
-print(f"Total de produtos encontrados: {len(resultados)}\n")
-
-# Itera sobre os resultados printando as propriedades
-for i, produto in enumerate(resultados, 1):
-    print(f"--- Produto #{i} ---")
-    print(f"Loja:   {produto.loja}")
-    print(f"Link:   {produto.link_produto}")
-    print(f"Nome:   {produto.nome}")
-    print(f"Preço:  {produto.moeda} {produto.preco:.2f}")
-    print(f"Frete:  {produto.frete}")
-    print(f"Frete_gratis:  {produto.frete_gratis}")
-    print(f"Nota:   {produto.nota}")
-    print(f"Vendas: {produto.numero_vendas}")
-    print("-" * 40)
-
-    
