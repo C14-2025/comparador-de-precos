@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<a href="/">← Voltar</a>
+
+<h1>Resultados para "{{ produto_busca }}"</h1>
+<p>Encontrados {{ total_produtos }} produtos</p>
+
+{% for produto in produtos %}
+<div style="border: 1px solid #ccc; padding: 15px; margin: 10px 0;">
+    <h3>{{ produto.nome }}</h3>
+    <p><strong>Loja:</strong> {{ produto.loja }}</p>
+    <p><strong>Preço:</strong> {{ produto.moeda }} {{ produto.preco }}</p>
+    <p><strong>Frete:</strong> {{ produto.frete }}</p>
+</div>
+{% endfor %}
+{% endblock %}
