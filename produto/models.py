@@ -38,8 +38,7 @@ class OrdenadorProdutos:
     def ordenar_por_vendas(produtos, ascendente=True):
         # Ordena por quantidade de vendas (mais vendidos primeiro por padrão)
         return sorted(produtos, key=lambda x: OrdenadorProdutos.extrair_numero_vendas(x.numero_vendas), reverse=not ascendente)
-    
-    
+
     @staticmethod
     def ordenar_por_loja(produtos):
         # Ordena por loja alfabeticamente
