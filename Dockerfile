@@ -6,10 +6,11 @@ USER root
 
 RUN apt-get update
 RUN apt-get install -y wget
-
-RUN wget --no-verbose -O /tmp/Python-3.12.3.tgz https://www.python.org/ftp/python/3.12.3/Python-3.12.3.tgz
-RUN tar xzf /tmp/${PYTHON_VERSION}-bin.tar.gz -C /opt/
-
+RUN apt-get update && apt-get install -y \
+python3 \
+python3-pip \
+# Add any other required packages here, e.g., git, curl, build-essential
+&& rm -rf /var/lib/apt/lists/*
 RUN apt-get clean
 
 USER jenkins
