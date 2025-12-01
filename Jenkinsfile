@@ -83,6 +83,7 @@ pipeline {
                     
                     # Criar ZIP da aplicação
                     echo "Criando arquivo ZIP da aplicação..."
+                    apt-get update && apt-get install -y zip
                     zip -r comparador-precos-${BUILD_NUMBER}.zip . \
                         -x "*.venv/*" \
                         -x "*venv/*" \
@@ -105,7 +106,7 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: 'reports/index.html'
-            archiveArtifacts artifacts: 'dist/**/*'
+            archiveArtifacts artifacts: 'comparador-precos-${BUILD_NUMER}.zip'
         }
     }
 }
