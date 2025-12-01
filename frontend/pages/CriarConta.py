@@ -159,6 +159,8 @@ class CriarConta:
 
             if resposta.status_code == 201:
                 st.success("Conta criada com sucesso!")
+                
+                st.switch_page("pages/Login.py")
             else:
                 st.error("Usuário já cadastrado.")
 

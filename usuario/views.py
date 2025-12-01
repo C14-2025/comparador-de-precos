@@ -24,6 +24,10 @@ def login_usuario(request):
         return Response({"erro": "Email não encontrado"}, status=404)
 
     if check_password(senha, user.senha):
-        return Response({"mensagem": "Login ok", "usuario_id": user.id})
+        return Response({
+            "mensagem": "Login ok",
+            "usuario_id": user.id,
+            "nome": user.nome
+        })
     else:
         return Response({"erro": "Senha incorreta"}, status=400)
