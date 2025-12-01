@@ -9,7 +9,7 @@ RUN apt-get install -y wget
 RUN apt-get update && apt-get install -y \
 python3 \
 python3-pip \
-# Add any other required packages here, e.g., git, curl, build-essential
+python3.13-venv \
 && rm -rf /var/lib/apt/lists/*
 RUN apt-get clean
 
