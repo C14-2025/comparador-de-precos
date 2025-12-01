@@ -51,5 +51,17 @@ pipeline{
                 '''
             }
         }
+
+        stage('Testando'){
+            steps{
+                echo 'Ativando o ambiente virtual'
+                sh ".${VENV_PATH}/bin/activate"
+                echo 'Executando os testes'
+                sh '''
+                python manage.py test produto.tests --verbosity=2
+                '''
+                echo 'Testes concluidos!'
+            }
+        }
     }
 }
