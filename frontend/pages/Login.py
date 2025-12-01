@@ -52,9 +52,11 @@ class Login:
 
             if resposta.status_code == 200:
                 st.success("Logado com sucesso!")
-                st.session_state["usuario_id"] = resposta.json()["usuario_id"]
+                dados = resposta.json()
+                st.session_state["usuario_id"] = dados["usuario_id"]
+                st.session_state["usuario_nome"] = dados["nome"]
 
-                # st.switch_page("pages/Home.py")
+                st.switch_page("Home.py")
             
             else:
                 st.error(resposta.json().get("erro", "Erro desconhecido"))
