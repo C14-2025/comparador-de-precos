@@ -51,5 +51,17 @@ pipeline{
                 '''
             }
         }
+
+        stage('Testando'){
+            steps{
+                echo 'Executando os testes'
+                sh '''
+                . ${VENV_PATH}/bin/activate
+                python3 manage.py test
+                '''
+                echo 'Testes concluidos!'
+                echo 'Relatório dos testes vai ser gerado'
+            }
+        }
     }
 }

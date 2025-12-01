@@ -3,7 +3,7 @@ import os
 import glob
 import re
 import unicodedata
-from crawler import MercadoLivreCrawler, AmazonCrawler
+from buscaCrawler.crawler import MercadoLivreCrawler, AmazonCrawler
 from bs4 import BeautifulSoup
 from produto.models import Produto
 
@@ -84,7 +84,8 @@ class MotorDeBusca:
 
             if tag_nome:
                 nome_produto = tag_nome.text.strip()
-                link_produto = tag_nome.get('href')
+                if tag_nome.get('href'):
+                    link_produto = tag_nome.get('href')
 
             # ======================== VALOR =======================
             tag_moeda = soup.find('span', class_='andes-money-amount__currency-symbol')
@@ -152,18 +153,22 @@ class MotorDeBusca:
                 elif tag_imagem.get('src'):
                     imagem_produto = tag_imagem.get('src')
                 
-            produto = Produto(
-                loja="Mercado Livre",
-                link_produto= link_produto,
-                nome=nome_produto,
-                moeda=moeda_produto,
-                preco=preco_final_produto,
-                frete=frete_produto,
-                frete_gratis = frete_gratis,
-                nota=nota_produto,
-                numero_vendas=vendas_produto,
-                imagem=imagem_produto 
-            )
+            try:
+                produto = Produto(
+                    loja="Mercado Livre",
+                    link_produto=link_produto,
+                    nome=nome_produto,
+                    moeda=moeda_produto,
+                    preco=preco_final_produto,
+                    frete=frete_produto,
+                    frete_gratis=frete_gratis,
+                    nota=nota_produto,
+                    numero_vendas=vendas_produto,
+                    imagem=imagem_produto 
+                )
+                produtos.append(produto)
+            except ImportError:
+                pass
 
             produtos.append(produto)
     
@@ -184,18 +189,26 @@ class MotorDeBusca:
             tag_nome = soup.find('h2')
             nome_produto = "Nome não encontrado"
             link_produto = "Link não encontrado"
-
+            
+            # Inicializa tag_link como None para evitar UnboundLocalError
+            tag_link = None
+ 
             if tag_nome:
                 nome_produto = tag_nome.text.strip()
-                tag_link = tag_nome.find_parent('a')
                 
-                if tag_link and tag_link.get('href'):
-                    href_bruto = tag_link.get('href')
-                    
-                    if href_bruto.startswith('/'):
-                        link_produto = f"https://www.amazon.com.br{href_bruto}"
-                    else:
-                        link_produto = href_bruto
+                tag_link = tag_nome.find('a')
+                
+                # Se não achar filho, tenta achar PAI (caso a estrutura seja <a><h2>...</h2></a>)
+                if not tag_link:
+                    tag_link = tag_nome.find_parent('a')
+            
+            if tag_link and tag_link.get('href'):
+                href_bruto = tag_link.get('href')
+                
+                if href_bruto.startswith('/'):
+                    link_produto = f"https://www.amazon.com.br{href_bruto}"
+                else:
+                    link_produto = href_bruto
 
             # ================================ PRECO ===============================
             tag_container_preco = soup.find('span', class_='a-price')
