@@ -99,8 +99,7 @@ pipeline{
                         -x "*.git/*" \
                         -x "*htmlcov/*" \
                         -x "*reports/*" \
-                        -x "*.pytest_cache/*" \
-                        -x "*dist/*" || true
+                        -x "*.pytest_cache/*"
                     
                     echo "Artefato pronto!"
                     ls -lh dist/
@@ -110,9 +109,9 @@ pipeline{
     }
     post{
     always{
-        archiveArtifacts: 'reports/index.html'
+        archiveArtifacts artifacts: 'reports/index.html'
 
-        archiveArtifacts: 'dist/**/*'
+        archiveArtifacts artifacts: 'dist/**/*'
     }
 }
 }
