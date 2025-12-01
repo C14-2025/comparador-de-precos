@@ -1,7 +1,8 @@
+# produto/urls.py
 from django.urls import path
-# from produto.views import pesquisa, resultado # Importa as funções html da aplicação
+from . import views
 
-# urlpatterns = [
-#     path('pesquisa', pesquisa, name='pesquisa'),
-#     path('resultado', resultado, name='resultado'),
-# ]
+urlpatterns = [
+    path('', views.pagina_inicial, name='pagina_inicial'),
+    path('buscar/', views.buscar_produtos, name='buscar_produtos'),
+]

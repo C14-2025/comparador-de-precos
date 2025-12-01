@@ -6,6 +6,3 @@ class Produto():
         self.moeda = moeda
         self.preco = preco
         self.frete = frete
-        self.frete_gratis = frete_gratis
-        self.nota = nota
-        self.numero_vendas = numero_vendas
