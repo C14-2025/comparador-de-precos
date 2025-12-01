@@ -58,6 +58,8 @@ pipeline{
                 sh ". ${VENV_PATH}/bin/activate"
                 echo 'Executando os testes'
                 sh '''
+                . ${VENV_PATH}/bin/activate
+                pip list
                 python3 manage.py test produto.tests
                 '''
                 echo 'Testes concluidos!'
