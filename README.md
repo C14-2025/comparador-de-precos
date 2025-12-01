@@ -2,11 +2,15 @@
 Projeto da matéria de C14 dedicado a criar uma aplicação web que compara preços de lojas online, mostrando ao usuário o produto mais baratos entre as lojas.
 
 # TECNOLOGIAS E DEPENDÊNCIAS
-- Backend: Python=3.13.7;
-- Frontend: Streamlit;
-- Versionamento: pip;
-- Framework: Django;
-- Tipo de aplicação: Web;
+
+<p align="left">
+  <img alt="JS" height="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg">
+  <img alt="CSS" height="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg">
+  <img alt="Python" height="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg">
+  <img alt="Streamlit" height="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/streamlit/streamlit-original.svg">
+  <img alt="Django" height="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg">
+  <img alt="HTML" height="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg">
+</p>
 
 | Participante  | Matrícula / Curso | GitHub |
 | ------------- | ----------------- | ------ |
