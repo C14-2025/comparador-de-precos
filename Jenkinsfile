@@ -107,12 +107,12 @@ pipeline{
                 '''
         }
     }
-}
-
-post{
+    post{
     always{
         archiveArtifacts: 'reports/index.html'
 
         archiveArtifacts: 'dist/**/*'
     }
 }
+}
+
