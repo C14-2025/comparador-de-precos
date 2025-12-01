@@ -8,7 +8,7 @@ from crawler import MercadoLivreCrawler, AmazonCrawler
 from bs4 import BeautifulSoup
 
 # TODO: trocar a classe refactor_produto por produto
-from refactor_produto import Produto
+from produto.models import Produto
 
 
 class MotorDeBusca:
