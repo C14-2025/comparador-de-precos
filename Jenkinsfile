@@ -54,6 +54,8 @@ pipeline {
                 echo 'Executando os testes'
                 sh '''
                     . ${VENV_PATH}/bin/activate
+                    python3 manage.py 
+                    
                     coverage run manage.py test
                     coverage html -d ${REPORTS_DIR}
                 '''
@@ -65,7 +67,7 @@ pipeline {
             steps {
                 echo 'Preparando artefato da aplicação'
                 sh '''
-                    source ${VENV_PATH}/bin/activate
+                    . ${VENV_PATH}/bin/activate
                     
                     # Instala dependências novamente (garante empacotamento completo)
                     if [ -f "requirements.txt" ]; then
