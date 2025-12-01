@@ -1,7 +1,7 @@
 pipeline{
     agent any
     environment {
-        VENV_PATH = 'venv'
+        VENV_PATH = '.venv'
         
         // Env do Django
         SECRET_KEY = 'django-insecure-test-key-for-ci-only-do-not-use-in-production'
