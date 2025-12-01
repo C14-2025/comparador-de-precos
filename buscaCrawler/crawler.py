@@ -5,8 +5,10 @@ import urllib.parse
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 
+
 class BaseCrawler:
     def save_json(self, data, json_path: str, filename: str):
+
         os.makedirs(json_path, exist_ok=True)
         caminho_completo = os.path.join(json_path, f"{filename}.json")
         
@@ -14,8 +16,10 @@ class BaseCrawler:
             json.dump(data, f, ensure_ascii=False, indent=2)
             print(f"Arquivo salvo em: {caminho_completo}")
 
+
 class AmazonCrawler(BaseCrawler):
     def search(self, query: str, json_path: str):
+        
         q = urllib.parse.quote(query)
         url = f"https://www.amazon.com.br/s?k={q}"
 
@@ -37,8 +41,10 @@ class AmazonCrawler(BaseCrawler):
         self.save_json(data=results, json_path=json_path, filename="amazon")
         return results
 
+
 class MercadoLivreCrawler(BaseCrawler):
     def search(self, query: str, json_path: str):
+
         q = urllib.parse.quote(query)
         url = f"https://lista.mercadolivre.com.br/{q}"
 

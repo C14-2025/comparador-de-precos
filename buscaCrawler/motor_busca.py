@@ -3,12 +3,9 @@ import os
 import glob
 import re
 import unicodedata
-
 from crawler import MercadoLivreCrawler, AmazonCrawler
 from bs4 import BeautifulSoup
-
-# TODO: trocar a classe refactor_produto por produto
-from refactor_produto import Produto
+from produto.models import Produto
 
 
 class MotorDeBusca:
@@ -27,12 +24,12 @@ class MotorDeBusca:
         produtos = []
 
         produtos += MotorDeBusca.tratando_mercado_livre(dados_mlivre)
-    
         produtos += MotorDeBusca.tratando_amazon(dados_amazon)
 
         MotorDeBusca.limpar_arquivos_temporarios()
         
         return produtos
+
 
     @staticmethod
     def limpar_arquivos_temporarios():
@@ -48,26 +45,30 @@ class MotorDeBusca:
             except OSError as e:
                 print(f"Erro ao remover {arquivo}: {e}")
 
+
     @staticmethod
     def carregar_dados_json(caminho_arquivo: str) -> list:
         """Método auxiliar apenas para ler o arquivo."""
 
         try:
             with open(caminho_arquivo, 'r', encoding='utf-8') as arquivo:
-                return json.load(arquivo)
+                return json.load(arquivo) 
+            
         except FileNotFoundError:
             return []
+
 
     @staticmethod
     def tem_gratis(texto):
         texto_lower = texto.lower()
         
         nfkd = unicodedata.normalize('NFKD', texto_lower)
-        
+
         texto_limpo = "".join([c for c in nfkd if not unicodedata.combining(c)])
         
         return "gratis" in texto_limpo
     
+
     @staticmethod
     def tratando_mercado_livre(dados: list) -> list:
         produtos = []
@@ -123,19 +124,20 @@ class MotorDeBusca:
 
             # ======================== FRETE =======================
             tag_frete_rapido = soup.find('span', class_='poly-shipping--next_day')
-
-
             frete_produto = ''
+
             if tag_frete_rapido:
                 frete_produto = tag_frete_rapido.text.strip()
             else:
                 tag_frete_normal = soup.find('div', class_='poly-component__shipping')
+
                 if tag_frete_normal:
-                    frete_produto = tag_frete_normal.text.strip()                    
+                    frete_produto = tag_frete_normal.text.strip()    
                 else:
                     frete_produto = "Frete Indisponível"
             
             frete_gratis = False
+
             if MotorDeBusca.tem_gratis(frete_produto):
                 frete_gratis = True
 
@@ -167,6 +169,8 @@ class MotorDeBusca:
     
         return produtos
 
+
+
     @staticmethod
     def tratando_amazon(dados: list) -> list:
         """Método responsavel por Tratar o HTML da loja 'Amazon' recebido, transformando em objetos da classe Produto"""
@@ -176,14 +180,13 @@ class MotorDeBusca:
         for dado in dados:
             soup = BeautifulSoup(dado.get('html', ''), 'html.parser')
 
-            # ======================== NOME E LINK ========================
+            # ============================= NOME E LINK =============================
             tag_nome = soup.find('h2')
             nome_produto = "Nome não encontrado"
             link_produto = "Link não encontrado"
 
             if tag_nome:
                 nome_produto = tag_nome.text.strip()
-                
                 tag_link = tag_nome.find_parent('a')
                 
                 if tag_link and tag_link.get('href'):
@@ -194,7 +197,7 @@ class MotorDeBusca:
                     else:
                         link_produto = href_bruto
 
-            # ======================== PRECO =======================
+            # ================================ PRECO ===============================
             tag_container_preco = soup.find('span', class_='a-price')
             
             moeda_produto = "R$"
@@ -237,8 +240,9 @@ class MotorDeBusca:
                     except ValueError:
                         valor_numerico = 0.0
             
-            # ======================== FRETE =======================
+            # =============================== FRETE ===============================
             tag_frete = soup.find('div', class_='udm-primary-delivery-message')
+
             if tag_frete:
                 frete_produto = " ".join(tag_frete.text.split())
             else:                
@@ -248,9 +252,10 @@ class MotorDeBusca:
             if MotorDeBusca.tem_gratis(frete_produto):
                 frete_gratis = True
 
-            # ======================== NOTA / AVALIAÇÃO =======================
+            # ========================== NOTA / AVALIAÇÃO =========================
             tag_nota = soup.find('span', class_='a-icon-alt')
             nota_produto = 0.0
+
             if tag_nota:
                 try:
                     texto_nota = tag_nota.text.strip().split(' ')[0].replace(',', '.')
@@ -264,11 +269,12 @@ class MotorDeBusca:
             
             for t in tags_vendas:
                 texto_venda = t.text.lower()
+
                 if 'compra' in texto_venda or 'bought' in texto_venda:
                     vendas_produto = t.text.strip()
                     break
                     
-            # ======================== IMAGEM =======================
+            # =============================== IMAGEM ==============================
             tag_imagem = soup.find('img', class_='s-image')
             imagem_produto = "Sem imagem"
             
@@ -287,6 +293,7 @@ class MotorDeBusca:
                 numero_vendas=vendas_produto,
                 imagem = imagem_produto
             )
+            
             if produto.preco > 0.0:
                 produtos.append(produto)
         
