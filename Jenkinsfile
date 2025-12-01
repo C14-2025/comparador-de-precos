@@ -66,46 +66,61 @@ pipeline{
             }
         }
 
-        stage('Gerando artefato da build'){
-            steps{
-                echo 'Preparando artefatos'
+        stage('Gerando artefato da build') {
+            steps {
+                echo 'Preparando artefato da aplicação'
                 sh '''
-                    . ${VENV_PATH}/bin/activate
+                    source ${VENV_PATH}/bin/activate
                     
-                    pip install build wheel setuptools
-
-                    python manage.py collectstatic --noinput || true
-
-                    #
+                    # Instala dependências
+                    if [ -f "requirements.txt" ]; then
+                        pip install -r requirements.txt
+                    fi
                     
+                    # Collectstatic para Django (se aplicável)
+                    if [ -f "manage.py" ]; then
+                        python manage.py collectstatic --noinput || true
+                    fi
                     
-                    # arquivo bonitinho da versao
+                    # Cria arquivo de versão
                     echo "Build: ${BUILD_NUMBER}" > version.txt
                     echo "Branch: ${GIT_BRANCH}" >> version.txt
                     echo "Commit: ${GIT_COMMIT}" >> version.txt
                     echo "Data: $(date)" >> version.txt
                     
-                    #criando a lista de dependencias
+                    # Freeze de dependências
                     pip freeze > requirements-freeze.txt
                     
-                    # até onde eu pesquisei artefato python é um zip então boa
-                    echo "Criando arquivo ZIP da aplicação..."
-                    zip -r dist/comparador-precos-${BUILD_NUMBER}.zip . \
-                        -x "*.venv/*" \
-                        -x "*venv/*" \
-                        -x "*env/*" \
-                        -x "*.pyc" \
-                        -x "*__pycache__/*" \
-                        -x "*.git/*" \
-                        -x "*htmlcov/*" \
-                        -x "*reports/*" \
-                        -x "*.pytest_cache/*"
+                    # Cria ZIP diretamente (método simples)
+                    mkdir -p dist
                     
-                    echo "Artefato pronto!"
+                    # Limpa arquivos temporários Python antes de zipar
+                    find . -name "*.pyc" -delete
+                    find . -name "_pycache_" -type d -exec rm -rf {} + 2>/dev/null || true
+                    
+                    # Cria o ZIP excluindo o que não precisa
+                    zip -r "dist/comparador-precos-${BUILD_NUMBER}.zip" . \
+                        -x ".git" \
+                        -x "venv/" \
+                        -x "env/" \
+                        -x ".venv/" \
+                        -x "_pycache_/" \
+                        -x "*.pyc" \
+                        -x "dist/*" \
+                        -x "test" \
+                        -x "*.log" \
+                        -x "*.sqlite3" \
+                        -x ".pytest_cache/*" \
+                        -x "htmlcov/*" \
+                        -x ".coverage" \
+                        -x "reports/*" \
+                        -x ".env*" \
+                        -x ".DS_Store"
+                    
+                    echo "Artefato criado: dist/comparador-precos-${BUILD_NUMBER}.zip"
                     ls -lh dist/
                 '''
             }
-        }
     }
     post{
     always{
