@@ -1,5 +1,11 @@
 pipeline{
-    agent any
+    agent {
+        docker {
+            image 'python:3.12.3-slim'
+            args '-u root:root'
+        }
+    }
+
     environment {
         VENV_PATH = '.venv'
         
