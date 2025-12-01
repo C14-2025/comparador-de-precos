@@ -1,17 +1,20 @@
-pipeline{
+pipeline {
     agent any
+
     environment {
         VENV_PATH = '.venv'
         REPORTS_DIR = 'reports'
-        
+
         // Env do Django
         SECRET_KEY = 'django-insecure-test-key-for-ci-only-do-not-use-in-production'
         DEBUG = 'False'
         ALLOWED_HOSTS = 'localhost,127.0.0.1'
-    }    
-    stages{
-        stage('Checkout'){
-            steps{
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
                 echo 'Clonando o repositório :)'
                 echo "Branch: ${env.GIT_BRANCH}"
                 echo "Pipeline ativada por: ${currentBuild.getBuildCauses()[0].username ?: 'Github Webhook'}"
@@ -19,48 +22,40 @@ pipeline{
             }
         }
 
-        stage('Criando o ambiente virtual'){
-            steps{
+        stage('Criando o ambiente virtual') {
+            steps {
                 echo 'Criando o ambiente virtual (.venv)'
                 sh '''
-                    # Deixa o ambiente limpo caso já exista uma venv anteriormente
                     rm -rf ${VENV_PATH}
-
-                    # Criando a venv
                     python3 -m venv ${VENV_PATH}
 
-                    # Ativando e atualizando o pip
                     . ${VENV_PATH}/bin/activate
                     pip install --upgrade pip setuptools wheel
-                    echo " Ambiente virtual criado com sucesso! "
-
+                    echo "Ambiente virtual criado com sucesso!"
                 '''
             }
         }
 
-        stage('Instalando as dependencias'){
-            steps{
+        stage('Instalando as dependencias') {
+            steps {
                 echo 'Instalando as dependencias do requirements.txt'
                 sh '''
-                . ${VENV_PATH}/bin/activate
+                    . ${VENV_PATH}/bin/activate
+                    pip install -r requirements.txt
 
-                # instalando as dependencias :D
-                pip install -r requirements.txt
-
-                echo "dependencias instaladas:"
-                pip list
+                    echo "Dependencias instaladas:"
+                    pip list
                 '''
             }
         }
 
-        stage('Testando'){
-            steps{
+        stage('Testando') {
+            steps {
                 echo 'Executando os testes'
                 sh '''
-                . ${VENV_PATH}/bin/activate
-                coverage run manage.py test
-                coverage html -d ${REPORTS_DIR}
-
+                    . ${VENV_PATH}/bin/activate
+                    coverage run manage.py test
+                    coverage html -d ${REPORTS_DIR}
                 '''
                 echo 'Testes concluidos!'
             }
@@ -72,12 +67,12 @@ pipeline{
                 sh '''
                     source ${VENV_PATH}/bin/activate
                     
-                    # Instala dependências
+                    # Instala dependências novamente (garante empacotamento completo)
                     if [ -f "requirements.txt" ]; then
                         pip install -r requirements.txt
                     fi
                     
-                    # Collectstatic para Django (se aplicável)
+                    # Collectstatic para Django (se existir)
                     if [ -f "manage.py" ]; then
                         python manage.py collectstatic --noinput || true
                     fi
@@ -91,29 +86,26 @@ pipeline{
                     # Freeze de dependências
                     pip freeze > requirements-freeze.txt
                     
-                    # Cria ZIP diretamente (método simples)
                     mkdir -p dist
                     
-                    # Limpa arquivos temporários Python antes de zipar
+                    # Limpa arquivos temporários
                     find . -name "*.pyc" -delete
-                    find . -name "_pycache_" -type d -exec rm -rf {} + 2>/dev/null || true
+                    find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
                     
-                    # Cria o ZIP excluindo o que não precisa
+                    # Cria o ZIP do projeto
                     zip -r "dist/comparador-precos-${BUILD_NUMBER}.zip" . \
-                        -x ".git" \
-                        -x "venv/" \
-                        -x "env/" \
-                        -x ".venv/" \
-                        -x "_pycache_/" \
-                        -x "*.pyc" \
-                        -x "dist/*" \
-                        -x "test" \
+                        -x ".git/**" \
+                        -x "${VENV_PATH}/**" \
+                        -x "env/**" \
+                        -x "venv/**" \
+                        -x "dist/**" \
+                        -x "test/**" \
                         -x "*.log" \
                         -x "*.sqlite3" \
-                        -x ".pytest_cache/*" \
-                        -x "htmlcov/*" \
+                        -x ".pytest_cache/**" \
+                        -x "htmlcov/**" \
                         -x ".coverage" \
-                        -x "reports/*" \
+                        -x "reports/**" \
                         -x ".env*" \
                         -x ".DS_Store"
                     
@@ -121,13 +113,13 @@ pipeline{
                     ls -lh dist/
                 '''
             }
+        }
     }
-    post{
-    always{
-        archiveArtifacts artifacts: 'reports/index.html'
 
-        archiveArtifacts artifacts: 'dist/**/*'
-    }
-    }
+    post {
+        always {
+            archiveArtifacts artifacts: 'reports/index.html'
+            archiveArtifacts artifacts: 'dist/**/*'
+        }
     }
 }
