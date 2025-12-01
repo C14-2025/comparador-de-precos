@@ -12,6 +12,7 @@ python3-pip \
 python3.13-venv \
 && rm -rf /var/lib/apt/lists/*
 RUN apt-get install -y mailutils
+RUN apt-get install -y zip
 RUN apt-get clean
 
 USER jenkins
