@@ -54,13 +54,10 @@ pipeline{
 
         stage('Testando'){
             steps{
-                echo 'Ativando o ambiente virtual'
-                sh ". ${VENV_PATH}/bin/activate"
                 echo 'Executando os testes'
                 sh '''
                 . ${VENV_PATH}/bin/activate
-                pip list
-                python3 manage.py test produto.tests
+                python3 manage.py test
                 '''
                 echo 'Testes concluidos!'
                 echo 'Relatório dos testes vai ser gerado'
