@@ -1,17 +1,11 @@
 import streamlit as st
-
-# ============================================================
-# CONFIGURAÇÕES INICIAIS
-# ============================================================
+import requests
 st.set_page_config(
     page_title="Comparador de preço",
     page_icon="💲",
     layout="wide"
 )
 
-# ============================================================
-# INICIALIZAÇÃO DA SESSION_STATE (evita KeyError)
-# ============================================================
 if "usuario_id" not in st.session_state:
     st.session_state["usuario_id"] = None
 
@@ -108,3 +102,40 @@ produto_pesquisado = st.text_input(
     "Pesquise um produto que você tem interesse em comprar:",
     placeholder="🔍 Nome do produto..."
 )
+
+buscar = st.button("Buscar")
+
+if buscar and produto_pesquisado:
+    with st.spinner("Buscando produtos..."):
+        try:
+            url = "http://127.0.0.1:8000/api/buscar/"
+            params = {"produto": produto_pesquisado}
+
+            response = requests.get(url, params=params)
+
+            if response.status_code != 200:
+                st.error("Erro ao buscar produtos")
+            else:
+                produtos = response.json()
+
+                st.write(f"### 🔎 Resultados encontrados: {len(produtos)}")
+
+                for p in produtos:
+                    with st.container(border=True):
+                        cols = st.columns([1, 3])
+
+                        with cols[0]:
+                            if p["imagem"]:
+                                st.image(p["imagem"], use_container_width=True)
+
+                        with cols[1]:
+                            st.subheader(p["nome"])
+                            st.write(f"**Loja:** {p['loja']}")
+                            st.write(f"**Preço:** {p['moeda']} {p['preco']:.2f}")
+                            st.write(f"**Frete:** {p['frete']}")
+                            st.write(f"**Nota:** ⭐ {p['nota']}")
+                            st.write(f"**Vendas:** {p['numero_vendas']}")
+
+                            st.link_button("Ver produto", p["link_produto"])
+        except Exception as e:
+            st.error(f"Erro: {e}")
