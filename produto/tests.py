@@ -2,7 +2,8 @@ from django.test import TestCase
 from unittest.mock import MagicMock, patch
 
 from produto.models import OrdenadorProdutos, FiltrosProdutos
-
+#LEMBRANDO PARA BAIXAR CORRETAMENTE O DJANGO FRAMEWORK PARA RODAR OS TESTES:
+#BAICAR CORRETAMENTE OS REQUERIMENTS.TXT, SÃO NECESSÁRIOS.
 
 # =============================================
 #   TESTES UNITÁRIOS REAIS (SEM MOCK)
