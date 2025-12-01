@@ -1,7 +1,7 @@
 pipeline{
     agent any
     environment {
-        VENV_PATH = '.venv'
+        VENV_PATH = 'venv'
         
         // Env do Django
         SECRET_KEY = 'django-insecure-test-key-for-ci-only-do-not-use-in-production'
@@ -41,7 +41,7 @@ pipeline{
             steps{
                 echo 'Instalando as dependencias do requirements.txt'
                 sh '''
-                .${VENV_PATH}/bin/activate
+                . ${VENV_PATH}/bin/activate
 
                 # instalando as dependencias :D
                 pip install -r requirements.txt
@@ -55,7 +55,7 @@ pipeline{
         stage('Testando'){
             steps{
                 echo 'Ativando o ambiente virtual'
-                sh "${VENV_PATH}/bin/activate"
+                sh ". ${VENV_PATH}/bin/activate"
                 echo 'Executando os testes'
                 sh '''
                 python manage.py test produto.tests --verbosity=2
