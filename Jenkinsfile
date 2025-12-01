@@ -2,6 +2,7 @@ pipeline{
     agent any
     environment {
         VENV_PATH = '.venv'
+        REPORTS_DIR = 'reports'
         
         // Env do Django
         SECRET_KEY = 'django-insecure-test-key-for-ci-only-do-not-use-in-production'
@@ -57,11 +58,61 @@ pipeline{
                 echo 'Executando os testes'
                 sh '''
                 . ${VENV_PATH}/bin/activate
-                python3 manage.py test
+                coverage run manage.py test
+                coverage html -d ${REPORTS_DIR}
+
                 '''
                 echo 'Testes concluidos!'
-                echo 'Relatório dos testes vai ser gerado'
+            }
+        }
+
+        stage('Gerando artefato da build'){
+            steps{
+                echo 'Preparando artefatos'
+                sh '''
+                    . ${VENV_PATH}/bin/activate
+                    
+                    pip install build wheel setuptools
+
+                    python manage.py collectstatic --noinput || true
+
+                    #
+                    python -m build --outdir dist/
+                    
+                    # arquivo bonitinho da versao
+                    echo "Build: ${BUILD_NUMBER}" > version.txt
+                    echo "Branch: ${GIT_BRANCH}" >> version.txt
+                    echo "Commit: ${GIT_COMMIT}" >> version.txt
+                    echo "Data: $(date)" >> version.txt
+                    
+                    #criando a lista de dependencias
+                    pip freeze > requirements-freeze.txt
+                    
+                    # até onde eu pesquisei artefato python é um zip então boa
+                    echo "Criando arquivo ZIP da aplicação..."
+                    zip -r dist/comparador-precos-${BUILD_NUMBER}.zip . \
+                        -x "*.venv/*" \
+                        -x "*venv/*" \
+                        -x "*env/*" \
+                        -x "*.pyc" \
+                        -x "*__pycache__/*" \
+                        -x "*.git/*" \
+                        -x "*htmlcov/*" \
+                        -x "*reports/*" \
+                        -x "*.pytest_cache/*"
+                    
+                    echo "Artefato pronto!"
+                    ls -lh dist/
+                '''
             }
         }
     }
+    post{
+    always{
+        archiveArtifacts artifacts: 'reports/index.html'
+
+        archiveArtifacts artifacts: 'dist/**/*'
+    }
 }
+}
+
