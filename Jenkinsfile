@@ -105,6 +105,7 @@ pipeline{
                     echo "Artefato pronto!"
                     ls -lh dist/
                 '''
+            }
         }
     }
     post{
