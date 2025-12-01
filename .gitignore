@@ -7,7 +7,7 @@ static/info.txt
 .vscode/
 TODO.md
 README.md
-app/json_temp
+buscaCrawler/json_temp/*.json
 
 ### Django ###
 *.log
