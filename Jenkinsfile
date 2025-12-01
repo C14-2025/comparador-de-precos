@@ -61,6 +61,7 @@ pipeline{
                 python3 manage.py test produto.tests
                 '''
                 echo 'Testes concluidos!'
+                echo 'Relatório dos testes vai ser gerado'
             }
         }
     }
