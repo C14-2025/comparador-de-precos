@@ -64,55 +64,39 @@ pipeline {
         }
 
         stage('Gerando artefato da build') {
-            steps {
-                echo 'Preparando artefato da aplicação'
+            steps{
+                echo 'Preparando artefatos para distribuição'
                 sh '''
                     . ${VENV_PATH}/bin/activate
                     
-                    # Instala dependências novamente (garante empacotamento completo)
-                    if [ -f "requirements.txt" ]; then
-                        pip install -r requirements.txt
-                    fi
+                    # Coletar arquivos estáticos do Django
+                    python manage.py collectstatic --noinput || true
                     
-                    # Collectstatic para Django (se existir)
-                    if [ -f "manage.py" ]; then
-                        python manage.py collectstatic --noinput || true
-                    fi
-                    
-                    # Cria arquivo de versão
+                    # Criar arquivo de versão
                     echo "Build: ${BUILD_NUMBER}" > version.txt
                     echo "Branch: ${GIT_BRANCH}" >> version.txt
                     echo "Commit: ${GIT_COMMIT}" >> version.txt
                     echo "Data: $(date)" >> version.txt
                     
-                    # Freeze de dependências
+                    # Criar arquivo requirements-freeze.txt (versões exatas)
                     pip freeze > requirements-freeze.txt
                     
-                    mkdir -p dist
+                    # Criar ZIP da aplicação
+                    echo "Criando arquivo ZIP da aplicação..."
+                    zip -r comparador-precos-${BUILD_NUMBER}.zip . \
+                        -x "*.venv/*" \
+                        -x "*venv/*" \
+                        -x "*env/*" \
+                        -x "*.pyc" \
+                        -x "*__pycache__/*" \
+                        -x "*.git/*" \
+                        -x "*htmlcov/*" \
+                        -x "*reports/*" \
+                        -x "*.pytest_cache/*" \
+                        -x "*node_modules/*" || true
                     
-                    # Limpa arquivos temporários
-                    find . -name "*.pyc" -delete
-                    find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
-                    
-                    # Cria o ZIP do projeto
-                    zip -r "dist/comparador-precos-${BUILD_NUMBER}.zip" . \
-                        -x ".git/**" \
-                        -x "${VENV_PATH}/**" \
-                        -x "env/**" \
-                        -x "venv/**" \
-                        -x "dist/**" \
-                        -x "test/**" \
-                        -x "*.log" \
-                        -x "*.sqlite3" \
-                        -x ".pytest_cache/**" \
-                        -x "htmlcov/**" \
-                        -x ".coverage" \
-                        -x "reports/**" \
-                        -x ".env*" \
-                        -x ".DS_Store"
-                    
-                    echo "Artefato criado: dist/comparador-precos-${BUILD_NUMBER}.zip"
-                    ls -lh dist/
+                    echo "✅ Artefatos preparados!"
+                    ls -lh comparador-precos-${BUILD_NUMBER}.zip
                 '''
             }
         }
