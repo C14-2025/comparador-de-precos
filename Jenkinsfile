@@ -77,7 +77,7 @@ pipeline{
                     python manage.py collectstatic --noinput || true
 
                     #
-                    python -m build --outdir dist/
+                    
                     
                     # arquivo bonitinho da versao
                     echo "Build: ${BUILD_NUMBER}" > version.txt
