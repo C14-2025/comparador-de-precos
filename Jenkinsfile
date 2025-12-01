@@ -58,7 +58,7 @@ pipeline{
                 sh ". ${VENV_PATH}/bin/activate"
                 echo 'Executando os testes'
                 sh '''
-                python manage.py test produto.tests --verbosity=2
+                python manage.py test produto.tests
                 '''
                 echo 'Testes concluidos!'
             }
