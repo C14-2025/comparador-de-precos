@@ -32,6 +32,22 @@ pipeline{
                     . ${VENV_PATH}/bin/activate
                     pip install --upgrade pip setuptools wheel
                     echo " Ambiente virtual criado com sucesso! "
+
+                '''
+            }
+        }
+
+        stage('Instalando as dependencias'){
+            steps{
+                echo 'Instalando as dependencias do requirements.txt'
+                sh '''
+                . ${VENV_PATH}/bin/activate
+
+                # instalando as dependencias :D
+                pip install -r requirements.txt
+
+                echo "dependencias instaladas:"
+                pip list
                 '''
             }
         }
