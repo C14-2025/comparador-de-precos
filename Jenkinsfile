@@ -1,20 +1,17 @@
-pipeline {
+pipeline{
     agent any
-
     environment {
         VENV_PATH = '.venv'
         REPORTS_DIR = 'reports'
-
+        
         // Env do Django
         SECRET_KEY = 'django-insecure-test-key-for-ci-only-do-not-use-in-production'
         DEBUG = 'False'
         ALLOWED_HOSTS = 'localhost,127.0.0.1'
-    }
-
-    stages {
-
-        stage('Checkout') {
-            steps {
+    }    
+    stages{
+        stage('Checkout'){
+            steps{
                 echo 'Clonando o repositório :)'
                 echo "Branch: ${env.GIT_BRANCH}"
                 echo "Pipeline ativada por: ${currentBuild.getBuildCauses()[0].username ?: 'Github Webhook'}"
@@ -22,77 +19,99 @@ pipeline {
             }
         }
 
-        stage('Criando o ambiente virtual') {
-            steps {
+        stage('Criando o ambiente virtual'){
+            steps{
                 echo 'Criando o ambiente virtual (.venv)'
                 sh '''
+                    # Deixa o ambiente limpo caso já exista uma venv anteriormente
                     rm -rf ${VENV_PATH}
+
+                    # Criando a venv
                     python3 -m venv ${VENV_PATH}
 
+                    # Ativando e atualizando o pip
                     . ${VENV_PATH}/bin/activate
                     pip install --upgrade pip setuptools wheel
-                    echo "Ambiente virtual criado com sucesso!"
+                    echo " Ambiente virtual criado com sucesso! "
+
                 '''
             }
         }
 
-        stage('Instalando as dependencias') {
-            steps {
+        stage('Instalando as dependencias'){
+            steps{
                 echo 'Instalando as dependencias do requirements.txt'
                 sh '''
-                    . ${VENV_PATH}/bin/activate
-                    pip install -r requirements.txt
+                . ${VENV_PATH}/bin/activate
 
-                    echo "Dependencias instaladas:"
-                    pip list
+                # instalando as dependencias :D
+                pip install -r requirements.txt
+
+                echo "dependencias instaladas:"
+                pip list
                 '''
             }
         }
 
-        stage('Testando') {
-            steps {
+        stage('Testando'){
+            steps{
                 echo 'Executando os testes'
                 sh '''
-                    . ${VENV_PATH}/bin/activate
-                    python3 manage.py 
-                    
-                    coverage run manage.py test
-                    coverage html -d ${REPORTS_DIR}
+                . ${VENV_PATH}/bin/activate
+                coverage run manage.py test
+                coverage html -d ${REPORTS_DIR}
+
                 '''
                 echo 'Testes concluidos!'
             }
         }
 
-        stage('Gerando artefato da build') {
-            steps {
+        stage('Gerando artefato da build'){
+            steps{
+                echo 'Preparando artefatos'
                 sh '''
-                    echo "Criando arquivo TAR da aplicação..."
+                    . ${VENV_PATH}/bin/activate
+                    
+                    pip install build wheel setuptools
 
-                    ARTIFACT="comparador-precos-$BUILD_NUMBER.tar.gz"
+                    python manage.py collectstatic --noinput || true
 
-                    tar -czf $ARTIFACT . \
-                        --exclude=.venv \
-                        --exclude=venv \
-                        --exclude=env \
-                        --exclude=*.pyc \
-                        --exclude=__pycache__ \
-                        --exclude=.git \
-                        --exclude=htmlcov \
-                        --exclude=reports \
-                        --exclude=.pytest_cache \
-                        --exclude=node_modules
-
-                    echo "✅ Artefato criado: $ARTIFACT"
-                    ls -lh $ARTIFACT
+                    #
+                    python -m build --outdir dist/
+                    
+                    # arquivo bonitinho da versao
+                    echo "Build: ${BUILD_NUMBER}" > version.txt
+                    echo "Branch: ${GIT_BRANCH}" >> version.txt
+                    echo "Commit: ${GIT_COMMIT}" >> version.txt
+                    echo "Data: $(date)" >> version.txt
+                    
+                    #criando a lista de dependencias
+                    pip freeze > requirements-freeze.txt
+                    
+                    # até onde eu pesquisei artefato python é um zip então boa
+                    echo "Criando arquivo ZIP da aplicação..."
+                    zip -r dist/comparador-precos-${BUILD_NUMBER}.zip . \
+                        -x "*.venv/*" \
+                        -x "*venv/*" \
+                        -x "*env/*" \
+                        -x "*.pyc" \
+                        -x "*__pycache__/*" \
+                        -x "*.git/*" \
+                        -x "*htmlcov/*" \
+                        -x "*reports/*" \
+                        -x "*.pytest_cache/*"
+                    
+                    echo "Artefato pronto!"
+                    ls -lh dist/
                 '''
             }
         }
     }
+    post{
+    always{
+        archiveArtifacts artifacts: 'reports/index.html'
 
-    post {
-        always {
-            archiveArtifacts artifacts: 'reports/index.html'
-            archiveArtifacts artifacts: 'comparador-precos-${BUILD_NUMER}.zip'
-        }
+        archiveArtifacts artifacts: 'dist/**/*'
     }
+}
 }
