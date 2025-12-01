@@ -1,7 +1,7 @@
 from django.urls import path
-# from usuario.views import cadastro, login # Importa as funções html da aplicação
+from .views import cadastrar_usuario, login_usuario
 
-# urlpatterns = [
-#     path('cadastro', cadastro, name='cadastro'),
-#     path('login', login, name='login'),
-# ]
+urlpatterns = [
+    path('cadastrar/', cadastrar_usuario),
+    path('login/', login_usuario),
+]

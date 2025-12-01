@@ -20,3 +20,24 @@ Projeto da matéria de C14 dedicado a criar uma aplicação web que compara pre�
 | John Nunes Sugahara | 268 / GES | [JohnSugahara](https://github.com/JohnSugahara) |
 | Marcelo Alckmin Pereira Lima | 119 / GES | [marceloalckmin](https://github.com/marceloalckmin) |
 | Vinícius Carvalho Ensá | 266 / GES | [ViniciusCarvalhoEnsa](https://github.com/ViniciusCarvalhoEnsa) |
+
+# INTRUÇÕES PARA RODAR O PROJETO
+## Instalando as depedências
+Para adicionar as dependências do projeto, rode o comando abaixo no terminal da raiz do projeto:
+```python
+pip install -r requirements.txt
+```
+Depois, adicione as migrações no mesmo terminal:
+```python
+python manage.py makemigrations
+python manage.py migrate
+```
+## Rodar o backend
+```python
+python manage.py runserver
+```
+## Rodar o frontend
+```python
+cd frontend
+python -m streamlit run Home.py
+```

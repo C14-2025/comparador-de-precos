@@ -3,6 +3,20 @@ import re
 
 # Create your models here.
 
+class Produto():
+    def __init__(self, loja:str, link_produto: str, nome:str, moeda:str, preco:float, frete:str, frete_gratis:bool, nota:float, numero_vendas: str, imagem: str):
+        self.loja = loja
+        self.link_produto = link_produto
+        self.nome = nome
+        self.moeda = moeda
+        self.preco = preco
+        self.frete = frete
+        self.frete_gratis = frete_gratis
+        self.nota = nota
+        self.numero_vendas = numero_vendas
+        self.imagem = imagem
+
+
 # Classes de ordenação que trabalham com os objetos Produto do MotorDeBusca
 class OrdenadorProdutos:
     # Classe para ordenar produtos por diferentes critérios
@@ -65,9 +79,9 @@ class FiltrosProdutos:
         return [p for p in produtos if float(p.nota) >= nota_minima]
     
     @staticmethod
-    def filtrar_frete_gratis(produtos):
-        # Filtra apenas produtos com frete grátis
-        return [p for p in produtos if any(termo in p.frete.lower() 
-                                         for termo in ['grátis', 'gratis', 'free', 'frete grátis', 'frete gratis', 'frete gratuito',
-                                                        'GRÁTIS', 'GRATIS', 'FREE', 'FRETE GRÁTIS', 'FRETE GRATIS', 'FRETE GRATUITO'])]
+    def filtrar_por_frete(produtos, frete_gratis=True):
+        # Filtra produtos por condição de frete
+        # frete_gratis=True: apenas produtos com frete grátis
+        # frete_gratis=False: apenas produtos SEM frete grátis
+        return [p for p in produtos if p.frete_gratis == frete_gratis]
     
