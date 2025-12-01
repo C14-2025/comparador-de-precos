@@ -12,7 +12,6 @@ from refactor_produto import Produto
 
 
 class MotorDeBusca:
-    # Mudar Path
     PATH_TEMP = 'buscaCrawler/json_temp'
     
     def busca(produto: str):
@@ -35,7 +34,6 @@ class MotorDeBusca:
         
         return produtos
 
-    #remover funcao
     @staticmethod
     def limpar_arquivos_temporarios():
         """Apaga todos os JSONs da pasta temporária."""
@@ -50,7 +48,6 @@ class MotorDeBusca:
             except OSError as e:
                 print(f"Erro ao remover {arquivo}: {e}")
 
-    #remover funcao
     @staticmethod
     def carregar_dados_json(caminho_arquivo: str) -> list:
         """Método auxiliar apenas para ler o arquivo."""
@@ -200,29 +197,24 @@ class MotorDeBusca:
                 if tag_offscreen:
                     texto_preco = tag_offscreen.text.strip()
                 
-                # TENTATIVA 2 (FALLBACK): Se falhou acima, tenta montar visualmente
+                # TENTATIVA 2 (FALLBACK): tenta montar visualmente
                 if not texto_preco:
                     tag_inteiro = tag_container_preco.find('span', class_='a-price-whole')
                     tag_fracao = tag_container_preco.find('span', class_='a-price-fraction')
                     
                     if tag_inteiro:
-                        # Ex: "10.348" + "," + "99" -> "10.348,99"
                         inteiro = tag_inteiro.text.strip().replace('.', '') # Remove ponto de milhar
                         fracao = tag_fracao.text.strip() if tag_fracao else "00"
                         texto_preco = f"{inteiro},{fracao}"
 
-                # --- Processamento do texto encontrado ---
                 if texto_preco:
-                    # Limpa caracteres invisíveis
                     texto_preco = texto_preco.replace('\xa0', '').strip()
                     
                     if texto_preco.startswith("US$") or texto_preco.startswith("$"):
                         moeda_produto = "$"
                     
-                    # Regex para deixar só numeros, ponto e virgula
                     string_valor = re.sub(r'[^\d,.]', '', texto_preco)
                     
-                    # Tratamento de pontuação
                     if ',' in string_valor and '.' in string_valor:
                         string_valor = string_valor.replace('.', '').replace(',', '.')
                     elif ',' in string_valor:
@@ -249,15 +241,13 @@ class MotorDeBusca:
             nota_produto = 0.0
             if tag_nota:
                 try:
-                    # Ex: "4,8 de 5 estrelas" -> Pega 4.8 e garante ponto flutuante
                     texto_nota = tag_nota.text.strip().split(' ')[0].replace(',', '.')
                     nota_produto = float(texto_nota)
                 except (ValueError, IndexError):
                     nota_produto = 0.0
 
             # ======================== VENDAS (Mês Passado) =======================
-            # Ex: "50+ compras no mês passado" ou "100+ bought in past month"
-            vendas_produto = "0"
+            vendas_produto = "0 Produtos Vendidos no ultimo mês"
             tags_vendas = soup.find_all('span', class_='a-size-base a-color-secondary')
             
             for t in tags_vendas:
