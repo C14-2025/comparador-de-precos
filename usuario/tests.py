@@ -4,6 +4,8 @@ from rest_framework import status
 from django.contrib.auth.hashers import make_password, check_password
 from .models import Usuario
 from .serializers import UsuarioSerializer
+from unittest.mock import patch
+
 
 class AutenticacaoTest(TestCase):
     
@@ -47,4 +49,32 @@ class AutenticacaoTest(TestCase):
         response = self.client.post("/api/usuarios/login/", login_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertIn("erro", response.data)
+
+class AutenticacaoMockTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+    @patch("usuario.views.Usuario.objects.get")
+    def test_login_usuario_mock_sucesso(self, mock_get):
+        mock_usuario = mock_get.return_value
+        mock_usuario.id = 1
+        mock_usuario.nome = "Teste"
+        mock_usuario.senha = "hash_fake"
         
+        with patch("usuario.views.check_password", return_value=True):
+            response = self.client.post("/api/usuarios/login/", {"email": "teste@teste.com", "senha": "senha123"})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            data = response.json()
+            self.assertIn("usuario_id", data)
+            self.assertIn("nome", data)
+
+    @patch("usuario.views.Usuario.objects.get")
+    def test_login_usuario_mock_senha_errada(self, mock_get):
+        mock_usuario = mock_get.return_value
+        mock_usuario.senha = "hash_fake"
+        
+        with patch("usuario.views.check_password", return_value=False):
+            response = self.client.post("/api/usuarios/login/", {"email": "teste@teste.com", "senha": "senharrrada"})
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            data = response.json()
+            self.assertIn("erro", data)
