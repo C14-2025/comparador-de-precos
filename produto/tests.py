@@ -83,12 +83,12 @@ class TestMocksModels(TestCase):
 
 
 
-    @patch("produto.models.FiltrosProdutos.filtrar_frete_gratis")
+    @patch("produto.models.FiltrosProdutos.filtrar_por_frete")
     def test_mock_filtro_frete(self, mock_frete):
         #mock do filtro frete gratis
         mock_frete.return_value = ["frete_gratis"]
 
-        result = FiltrosProdutos.filtrar_frete_gratis(["x"])
+        result = FiltrosProdutos.filtrar_por_frete(["x"])
 
         mock_frete.assert_called_once()
         self.assertEqual(result, ["frete_gratis"])
