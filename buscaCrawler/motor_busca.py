@@ -138,6 +138,17 @@ class MotorDeBusca:
             frete_gratis = False
             if MotorDeBusca.tem_gratis(frete_produto):
                 frete_gratis = True
+
+            # ======================== IMAGEM =======================
+            tag_imagem = soup.find('img', class_='poly-component__picture')
+            imagem_produto = "Sem imagem"
+
+            if tag_imagem:
+                # Tenta pegar o 'data-src' por conta do Lazy Loading
+                if tag_imagem.get('data-src'):
+                    imagem_produto = tag_imagem.get('data-src')
+                elif tag_imagem.get('src'):
+                    imagem_produto = tag_imagem.get('src')
                 
             produto = Produto(
                 loja="Mercado Livre",
@@ -148,7 +159,8 @@ class MotorDeBusca:
                 frete=frete_produto,
                 frete_gratis = frete_gratis,
                 nota=nota_produto,
-                numero_vendas=vendas_produto
+                numero_vendas=vendas_produto,
+                imagem=imagem_produto 
             )
 
             produtos.append(produto)
@@ -255,6 +267,13 @@ class MotorDeBusca:
                 if 'compra' in texto_venda or 'bought' in texto_venda:
                     vendas_produto = t.text.strip()
                     break
+                    
+            # ======================== IMAGEM =======================
+            tag_imagem = soup.find('img', class_='s-image')
+            imagem_produto = "Sem imagem"
+            
+            if tag_imagem:
+                imagem_produto = tag_imagem.get('src')
 
             produto = Produto(
                 loja="Amazon",
@@ -265,7 +284,8 @@ class MotorDeBusca:
                 frete=frete_produto,
                 frete_gratis=frete_gratis,
                 nota=nota_produto,
-                numero_vendas=vendas_produto
+                numero_vendas=vendas_produto,
+                imagem = imagem_produto
             )
             if produto.preco > 0.0:
                 produtos.append(produto)
